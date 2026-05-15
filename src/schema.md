@@ -28,7 +28,7 @@
 | author_id | UUID | FK → users.id, NOT NULL | Автор курса |
 | title | VARCHAR(255) | NOT NULL | Название |
 | description | TEXT | NULL | Описание |
-| status | VARCHAR(50) | NOT NULL, CHECK IN ('draft', 'published', 'archived') | |
+| status | VARCHAR(50) | NOT NULL, CHECK IN ('draft', 'published') | |
 | created_at | TIMESTAMPTZ | NOT NULL | |
 | updated_at | TIMESTAMPTZ | NOT NULL | |
 
@@ -69,6 +69,7 @@
 | title | VARCHAR(255) | NOT NULL | |
 | position | INTEGER | NOT NULL, CHECK (> 0) | Порядковый номер в курсе |
 | status | VARCHAR(50) | NOT NULL, CHECK IN ('draft', 'published') | |
+| is_optional | BOOLEAN | NOT NULL DEFAULT FALSE | Необязательный урок |
 | deadline | TIMESTAMPTZ | NULL | Дедлайн (значение по умолчанию) |
 | deadline_type | VARCHAR(20) | NULL, CHECK IN ('soft', 'hard') | |
 | created_at | TIMESTAMPTZ | NOT NULL | |
@@ -95,7 +96,7 @@
 | lesson_id | UUID | FK → lessons.id, NOT NULL | |
 | title | VARCHAR(255) | NOT NULL | |
 | position | INTEGER | NOT NULL, CHECK (> 0) | Порядковый номер в уроке |
-| step_type | VARCHAR(50) | NULL, CHECK IN ('reading', 'quiz', 'code', 'interactive', 'checklist', 'illustration', 'video') | Тип шага |
+| step_type | VARCHAR(50) | NULL, CHECK IN ('checklist', 'illustration', 'video', 'student_work', 'quiz') | Тип шага |
 | content | TEXT | NULL | Содержимое (зависит от типа) |
 | status | VARCHAR(50) | NOT NULL, CHECK IN ('draft', 'published') | |
 | created_at | TIMESTAMPTZ | NOT NULL | |
@@ -114,6 +115,8 @@
 | step_id | UUID | FK → steps.id, NOT NULL | Шаг, на котором создана работа |
 | status | VARCHAR(50) | NOT NULL, CHECK IN ('draft', 'submitted', 'approved', 'changes_requested', 'overdue') | Жизненный цикл |
 | work_type | VARCHAR(50) | NOT NULL, CHECK IN ('test', 'coding', 'interactive') | Тип работы |
+| max_attempts | INTEGER | NULL | Максимальное число попыток (для работ с попытками) |
+| current_attempt | INTEGER | NOT NULL DEFAULT 1 | Текущая попытка |
 | content | TEXT | NULL | Ссылка, код, текст ответа |
 | reviewer_comment | TEXT | NULL | Комментарий преподавателя |
 | submitted_at | TIMESTAMPTZ | NULL | Дата отправки на ревью |
@@ -127,6 +130,7 @@
 
 **Constraints:**
 - `CHECK (submitted_at IS NOT NULL OR status = 'draft')` — только черновик без даты отправки.
+- `CHECK (current_attempt >= 1 AND current_attempt <= max_attempts OR max_attempts IS NULL)`
 
 ### 10. `reviews`
 
@@ -246,19 +250,19 @@ student_works 1──N reviews
   "course_id": "b1c2d3e4-1234-5678-9abc-def012345678",
   "title": "Основы HTTP",
   "position": 2,
-  "status": "published"
+  "status": "published",
+  "is_optional": false
 }
 ```
 
-**Крайний — урок с жёстким дедлайном:**
+**Крайний — необязательный урок:**
 ```json
 {
   "id": "e4f5a6b7-4567-89ab-cdef-012345678901",
   "course_id": "b1c2d3e4-1234-5678-9abc-def012345678",
-  "title": "Финальный проект",
-  "position": 10,
-  "deadline": "2026-06-01T23:59:00Z",
-  "deadline_type": "hard",
+  "title": "Дополнительно: продвинутые паттерны",
+  "position": 11,
+  "is_optional": true,
   "status": "published"
 }
 ```
@@ -272,19 +276,19 @@ student_works 1──N reviews
   "lesson_id": "d3e4f5a6-3456-789a-bcde-f01234567890",
   "title": "Напиши функцию сортировки",
   "position": 3,
-  "step_type": "code",
+  "step_type": "student_work",
   "status": "published"
 }
 ```
 
-**Крайний — черновик шага:**
+**Крайний — шаг с квизом и черновик:**
 ```json
 {
   "id": "a6b7c8d9-6789-abcd-ef01-234567890123",
   "lesson_id": "d3e4f5a6-3456-789a-bcde-f01234567890",
-  "title": "Экспериментальное задание",
+  "title": "Проверь себя: тест по циклу for",
   "position": 4,
-  "step_type": "interactive",
+  "step_type": "quiz",
   "status": "draft"
 }
 ```
@@ -304,16 +308,18 @@ student_works 1──N reviews
 }
 ```
 
-**Крайний — черновик (не отправлен):**
+**Крайний — работа с попытками (пересдача):**
 ```json
 {
   "id": "c8d9e0f1-89ab-cdef-0123-456789012345",
   "student_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
   "step_id": "a6b7c8d9-6789-abcd-ef01-234567890123",
-  "status": "draft",
-  "work_type": "interactive",
-  "content": null,
-  "submitted_at": null
+  "status": "submitted",
+  "work_type": "test",
+  "max_attempts": 3,
+  "current_attempt": 2,
+  "content": "{\"answers\": [\"A\", \"C\", \"B\"]}",
+  "submitted_at": "2026-05-12T10:00:00Z"
 }
 ```
 
