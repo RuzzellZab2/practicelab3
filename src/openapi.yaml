@@ -354,6 +354,26 @@ components:
         - created_at
         - updated_at
 
+    Group:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - created_at
+        - updated_at
+
     Lesson:
       type: object
       properties:
@@ -568,22 +588,19 @@ components:
         - created_at
         - updated_at
 
-    Group:
+    CourseEnrollment:
       type: object
       properties:
-        id:
+        user_id:
           type: string
           format: uuid
-        name:
+        course_id:
           type: string
-        created_at:
-          type: string
-          format: date-time
-        updated_at:
+          format: uuid
+        enrolled_at:
           type: string
           format: date-time
       required:
-        - id
-        - name
-        - created_at
-        - updated_at
+        - user_id
+        - course_id
+        - enrolled_at

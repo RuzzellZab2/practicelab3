@@ -241,6 +241,27 @@ student_works 1──N reviews
 }
 ```
 
+### groups
+
+**Типичная группа:**
+```json
+{
+  "id": "d0e1f2a3-0010-4000-8000-000000000010",
+  "name": "9А"
+}
+```
+
+### course_enrollments
+
+**Типичная запись:**
+```json
+{
+  "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "course_id": "b1c2d3e4-1234-5678-9abc-def012345678",
+  "enrolled_at": "2026-03-01T10:00:00Z"
+}
+```
+
 ### lessons
 
 **Типичный урок:**
@@ -281,7 +302,7 @@ student_works 1──N reviews
 }
 ```
 
-**Крайний — шаг с квизом и черновик:**
+**Крайний — шаг с квизом (черновик):**
 ```json
 {
   "id": "a6b7c8d9-6789-abcd-ef01-234567890123",
@@ -357,7 +378,8 @@ student_works 1──N reviews
   "id": "f0a1b2c3-0abc-def0-1234-567890123458",
   "student_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
   "course_id": "b1c2d3e4-1234-5678-9abc-def012345678",
-  "current_lesson_id": "d3e4f5a6-3456-789a-bcde-f01234567890"
+  "current_lesson_id": "d3e4f5a6-3456-789a-bcde-f01234567890",
+  "completed_at": null
 }
 ```
 
