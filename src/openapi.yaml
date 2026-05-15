@@ -1,0 +1,542 @@
+openapi: "3.0.3"
+info:
+  title: PracticeLab API
+  version: "0.1.0"
+  description: |
+    API для чтения сущностей платформы PracticeLab.
+    Все идентификаторы — UUID v4 в строковом представлении.
+
+paths:
+  /platforms/{id}:
+    get:
+      operationId: getPlatform
+      summary: Получить платформу по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "a1b2c3d4-0001-4000-8000-000000000001"
+      responses:
+        "200":
+          description: Платформа найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Platform"
+              example:
+                id: "a1b2c3d4-0001-4000-8000-000000000001"
+                name: "PracticeLab"
+                site_url: "https://dvmn.org"
+                created_at: "2025-01-01T00:00:00Z"
+                updated_at: "2025-01-01T00:00:00Z"
+        "404":
+          description: Платформа не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /courses/{id}:
+    get:
+      operationId: getCourse
+      summary: Получить курс по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "b2c3d4e5-0002-4000-8000-000000000002"
+      responses:
+        "200":
+          description: Курс найден
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Course"
+              example:
+                id: "b2c3d4e5-0002-4000-8000-000000000002"
+                platform_id: "a1b2c3d4-0001-4000-8000-000000000001"
+                title: "Python"
+                status: "published"
+                is_group_course: false
+                created_at: "2025-02-01T00:00:00Z"
+                updated_at: "2025-02-10T00:00:00Z"
+        "404":
+          description: Курс не найден
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /lessons/{id}:
+    get:
+      operationId: getLesson
+      summary: Получить урок по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "d4e5f6a7-0004-4000-8000-000000000004"
+      responses:
+        "200":
+          description: Урок найден
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Lesson"
+              example:
+                id: "d4e5f6a7-0004-4000-8000-000000000004"
+                course_id: "b2c3d4e5-0002-4000-8000-000000000002"
+                title: "HTTP"
+                ordinal_number: 1
+                status: "published"
+                has_review: true
+                deadline: "2025-03-15T23:59:00Z"
+                deadline_type: "hard"
+                is_first: true
+                is_last: false
+                created_at: "2025-02-05T00:00:00Z"
+                updated_at: "2025-02-15T00:00:00Z"
+        "404":
+          description: Урок не найден
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /steps/{id}:
+    get:
+      operationId: getStep
+      summary: Получить шаг по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "f6a7b8c9-0006-4000-8000-000000000006"
+      responses:
+        "200":
+          description: Шаг найден
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Step"
+              example:
+                id: "f6a7b8c9-0006-4000-8000-000000000006"
+                lesson_id: "d4e5f6a7-0004-4000-8000-000000000004"
+                type: "student_work"
+                ordinal_number: 3
+                content:
+                  prompt: "Напиши функцию сортировки и отправь на проверку"
+                status: "published"
+                created_at: "2025-02-06T00:00:00Z"
+                updated_at: "2025-02-06T00:00:00Z"
+        "404":
+          description: Шаг не найден
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /student-works/{id}:
+    get:
+      operationId: getStudentWork
+      summary: Получить работу ученика по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "b8c9d0e1-0008-4000-8000-000000000008"
+      responses:
+        "200":
+          description: Работа ученика найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentWork"
+              example:
+                id: "b8c9d0e1-0008-4000-8000-000000000008"
+                lesson_id: "d4e5f6a7-0004-4000-8000-000000000004"
+                student_id: "u001-0000-0000-0000-000000000001"
+                status: "on_review"
+                submitted_at: "2025-03-14T12:00:00Z"
+                reviewed_at: null
+                deadline: "2025-03-15T23:59:00Z"
+                content:
+                  code: "def sort(arr): return sorted(arr)"
+                reviewer_comment: null
+                auto_checked: false
+                created_at: "2025-03-14T11:00:00Z"
+                updated_at: "2025-03-14T12:00:00Z"
+        "404":
+          description: Работа ученика не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /student-progresses/{id}:
+    get:
+      operationId: getStudentProgress
+      summary: Получить запись прогресса ученика по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "c9d0e1f2-0009-4000-8000-000000000009"
+      responses:
+        "200":
+          description: Прогресс найден
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/StudentProgress"
+              example:
+                id: "c9d0e1f2-0009-4000-8000-000000000009"
+                student_id: "u001-0000-0000-0000-000000000001"
+                course_id: "b2c3d4e5-0002-4000-8000-000000000002"
+                lesson_id: "d4e5f6a7-0004-4000-8000-000000000004"
+                is_completed: false
+                started_at: "2025-03-01T10:00:00Z"
+                completed_at: null
+                created_at: "2025-03-01T10:00:00Z"
+                updated_at: "2025-03-01T10:00:00Z"
+        "404":
+          description: Прогресс не найден
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /groups/{id}:
+    get:
+      operationId: getGroup
+      summary: Получить группу по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "d0e1f2a3-0010-4000-8000-000000000010"
+      responses:
+        "200":
+          description: Группа найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Group"
+              example:
+                id: "d0e1f2a3-0010-4000-8000-000000000010"
+                course_id: "b2c3d4e5-0002-4000-8000-000000000002"
+                name: "9А"
+                created_at: "2025-01-15T00:00:00Z"
+                updated_at: "2025-01-15T00:00:00Z"
+        "404":
+          description: Группа не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Описание ошибки
+          example: "Resource not found"
+      required:
+        - error
+
+    Platform:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        site_url:
+          type: string
+          format: uri
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - name
+        - site_url
+        - created_at
+        - updated_at
+
+    Course:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        platform_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        status:
+          type: string
+          enum:
+            - draft
+            - published
+            - archived
+        is_group_course:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - platform_id
+        - title
+        - status
+        - is_group_course
+        - created_at
+        - updated_at
+
+    Lesson:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        course_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        ordinal_number:
+          type: integer
+        status:
+          type: string
+          enum:
+            - draft
+            - published
+        has_review:
+          type: boolean
+        deadline:
+          type: string
+          format: date-time
+          nullable: true
+        deadline_type:
+          type: string
+          enum:
+            - soft
+            - hard
+          nullable: true
+        is_first:
+          type: boolean
+        is_last:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - course_id
+        - title
+        - ordinal_number
+        - status
+        - has_review
+        - is_first
+        - is_last
+        - created_at
+        - updated_at
+
+    Step:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        lesson_id:
+          type: string
+          format: uuid
+        type:
+          type: string
+          enum:
+            - text
+            - video
+            - checklist
+            - illustration
+            - student_work
+            - quiz
+        ordinal_number:
+          type: integer
+        content:
+          type: object
+          description: JSON-объект с содержимым шага (зависит от типа)
+        status:
+          type: string
+          enum:
+            - draft
+            - published
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - lesson_id
+        - type
+        - ordinal_number
+        - content
+        - status
+        - created_at
+        - updated_at
+
+    StudentWork:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        lesson_id:
+          type: string
+          format: uuid
+        student_id:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum:
+            - draft
+            - on_review
+            - on_revision
+            - accepted
+            - overdue
+        submitted_at:
+          type: string
+          format: date-time
+          nullable: true
+        reviewed_at:
+          type: string
+          format: date-time
+          nullable: true
+        deadline:
+          type: string
+          format: date-time
+          nullable: true
+        content:
+          type: object
+          description: JSON-объект с содержимым работы (код, ссылки, файлы)
+        reviewer_comment:
+          type: string
+          nullable: true
+        auto_checked:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - lesson_id
+        - student_id
+        - status
+        - auto_checked
+        - created_at
+        - updated_at
+
+    StudentProgress:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        student_id:
+          type: string
+          format: uuid
+        course_id:
+          type: string
+          format: uuid
+        lesson_id:
+          type: string
+          format: uuid
+          nullable: true
+        is_completed:
+          type: boolean
+        started_at:
+          type: string
+          format: date-time
+          nullable: true
+        completed_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - student_id
+        - course_id
+        - is_completed
+        - created_at
+        - updated_at
+
+    Group:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        course_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - course_id
+        - name
+        - created_at
+        - updated_at
