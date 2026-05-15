@@ -9,3 +9,5 @@
 - [Работа ученика](student_work.md)
 - [Ревью](review.md)
 - [Пользователь](user.md)
+- [Группа](group.md)
+- [Прогресс ученика](student_progress.md)
