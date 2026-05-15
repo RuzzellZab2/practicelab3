@@ -1,8 +1,8 @@
-# Схема БД — PracticeLab
+# Contract Pack — PracticeLab Database Schema
 
 ## Соглашения
 
-- `id` — UUID v4, тип `CHAR(36)` или эквивалент, PK.
+- `id` — UUID v4, тип `UUID`, PK.
 - `created_at`, `updated_at` — `TIMESTAMP WITH TIME ZONE`, NOT NULL.
 - Все внешние ключи — `UUID`, NOT NULL, с `ON DELETE CASCADE` (если не указано иное).
 
@@ -10,347 +10,369 @@
 
 ## Таблицы
 
-### 1. `platforms`
+### 1. `users`
 
 | Поле | Тип | Ограничения | Описание |
-|---|---|---|---|
-| id | UUID | PK | Идентификатор платформы |
-| name | VARCHAR(100) | UNIQUE, NOT NULL | Название платформы |
-| site_url | VARCHAR(500) | NOT NULL | URL сайта платформы |
-| created_at | TIMESTAMPTZ | NOT NULL | Дата создания записи |
-| updated_at | TIMESTAMPTZ | NOT NULL | Дата обновления записи |
+|------|-----|-------------|----------|
+| id | UUID | PK | |
+| role | VARCHAR(50) | NOT NULL, CHECK IN ('student', 'teacher', 'admin', 'course_author') | Роль пользователя |
+| name | VARCHAR(255) | NOT NULL | Имя |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
 
 ### 2. `courses`
 
 | Поле | Тип | Ограничения | Описание |
-|---|---|---|---|
-| id | UUID | PK | Идентификатор курса |
-| platform_id | UUID | FK → platforms.id, NOT NULL | Платформа, на которой расположен курс |
-| title | VARCHAR(300) | NOT NULL | Название курса |
-| status | VARCHAR(50) | NOT NULL, CHECK IN ('draft', 'published', 'archived') | Статус: черновик / опубликован / архив |
-| is_group_course | BOOLEAN | NOT NULL DEFAULT FALSE | Курс с группами (доступ по группам учеников) |
-| created_at | TIMESTAMPTZ | NOT NULL | Дата создания записи |
-| updated_at | TIMESTAMPTZ | NOT NULL | Дата обновления записи |
+|------|-----|-------------|----------|
+| id | UUID | PK | |
+| author_id | UUID | FK → users.id, NOT NULL | Автор курса |
+| title | VARCHAR(255) | NOT NULL | Название |
+| description | TEXT | NULL | Описание |
+| status | VARCHAR(50) | NOT NULL, CHECK IN ('draft', 'published', 'archived') | |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
 
 **Индексы:**
-- `idx_courses_platform_id` ON (platform_id)
+- `idx_courses_author_id` ON (author_id)
 - `idx_courses_status` ON (status)
 
-### 3. `lessons`
+### 3. `groups`
 
 | Поле | Тип | Ограничения | Описание |
-|---|---|---|---|
-| id | UUID | PK | Идентификатор урока |
-| course_id | UUID | FK → courses.id, NOT NULL | Курс, в который входит урок |
-| title | VARCHAR(300) | NOT NULL | Название урока |
-| ordinal_number | INTEGER | NOT NULL, CHECK (> 0) | Порядковый номер в курсе |
-| status | VARCHAR(50) | NOT NULL, CHECK IN ('draft', 'published') | Статус: черновик / опубликован |
-| has_review | BOOLEAN | NOT NULL DEFAULT FALSE | Урок с ревью |
-| deadline | TIMESTAMPTZ | NULL | Дедлайн урока (если установлен) |
-| deadline_type | VARCHAR(20) | NULL, CHECK IN ('soft', 'hard') | Тип дедлайна |
-| is_first | BOOLEAN | NOT NULL DEFAULT FALSE | Первый урок в курсе |
-| is_last | BOOLEAN | NOT NULL DEFAULT FALSE | Последний урок в курсе |
-| created_at | TIMESTAMPTZ | NOT NULL | Дата создания записи |
-| updated_at | TIMESTAMPTZ | NOT NULL | Дата обновления записи |
+|------|-----|-------------|----------|
+| id | UUID | PK | |
+| name | VARCHAR(200) | NOT NULL | Название группы, напр. «9А» |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
+
+### 4. `course_group_access`
+
+| Поле | Тип | Ограничения | Описание |
+|------|-----|-------------|----------|
+| course_id | UUID | PK, FK → courses.id | |
+| group_id | UUID | PK, FK → groups.id | |
+
+### 5. `course_enrollments`
+
+| Поле | Тип | Ограничения | Описание |
+|------|-----|-------------|----------|
+| user_id | UUID | PK, FK → users.id | |
+| course_id | UUID | PK, FK → courses.id | |
+| enrolled_at | TIMESTAMPTZ | NOT NULL | |
+
+### 6. `lessons`
+
+| Поле | Тип | Ограничения | Описание |
+|------|-----|-------------|----------|
+| id | UUID | PK | |
+| course_id | UUID | FK → courses.id, NOT NULL | |
+| title | VARCHAR(255) | NOT NULL | |
+| position | INTEGER | NOT NULL, CHECK (> 0) | Порядковый номер в курсе |
+| status | VARCHAR(50) | NOT NULL, CHECK IN ('draft', 'published') | |
+| deadline | TIMESTAMPTZ | NULL | Дедлайн (значение по умолчанию) |
+| deadline_type | VARCHAR(20) | NULL, CHECK IN ('soft', 'hard') | |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
 
 **Индексы:**
 - `idx_lessons_course_id` ON (course_id)
-- `idx_lessons_course_ordinal` ON (course_id, ordinal_number) UNIQUE
-- `idx_lessons_status` ON (status)
+- `idx_lessons_course_position` ON (course_id, position) UNIQUE
 
-### 4. `steps`
+### 7. `lesson_group_deadlines`
 
 | Поле | Тип | Ограничения | Описание |
-|---|---|---|---|
-| id | UUID | PK | Идентификатор шага |
-| lesson_id | UUID | FK → lessons.id, NOT NULL | Урок, в который входит шаг |
-| type | VARCHAR(50) | NOT NULL, CHECK IN ('text', 'video', 'checklist', 'illustration', 'student_work', 'quiz') | Тип шага |
-| ordinal_number | INTEGER | NOT NULL, CHECK (> 0) | Порядковый номер в уроке |
-| content | TEXT | NOT NULL | Содержимое шага (JSON в зависимости от типа) |
-| status | VARCHAR(50) | NOT NULL, CHECK IN ('draft', 'published') | Статус шага |
-| created_at | TIMESTAMPTZ | NOT NULL | Дата создания записи |
-| updated_at | TIMESTAMPTZ | NOT NULL | Дата обновления записи |
+|------|-----|-------------|----------|
+| lesson_id | UUID | PK, FK → lessons.id, ON DELETE CASCADE | |
+| group_id | UUID | PK, FK → groups.id, ON DELETE CASCADE | |
+| deadline | TIMESTAMPTZ | NOT NULL | |
+| deadline_type | VARCHAR(20) | NOT NULL, CHECK IN ('soft', 'hard') | |
+
+### 8. `steps`
+
+| Поле | Тип | Ограничения | Описание |
+|------|-----|-------------|----------|
+| id | UUID | PK | |
+| lesson_id | UUID | FK → lessons.id, NOT NULL | |
+| title | VARCHAR(255) | NOT NULL | |
+| position | INTEGER | NOT NULL, CHECK (> 0) | Порядковый номер в уроке |
+| step_type | VARCHAR(50) | NULL, CHECK IN ('reading', 'quiz', 'code', 'interactive', 'checklist', 'illustration', 'video') | Тип шага |
+| content | TEXT | NULL | Содержимое (зависит от типа) |
+| status | VARCHAR(50) | NOT NULL, CHECK IN ('draft', 'published') | |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
 
 **Индексы:**
 - `idx_steps_lesson_id` ON (lesson_id)
-- `idx_steps_lesson_ordinal` ON (lesson_id, ordinal_number) UNIQUE
+- `idx_steps_lesson_position` ON (lesson_id, position) UNIQUE
 
-### 5. `student_works`
+### 9. `student_works`
 
 | Поле | Тип | Ограничения | Описание |
-|---|---|---|---|
-| id | UUID | PK | Идентификатор работы |
-| lesson_id | UUID | FK → lessons.id, NOT NULL | Урок, в рамках которого сдана работа |
-| student_id | UUID | NOT NULL | Идентификатор ученика (внешняя система) |
-| status | VARCHAR(50) | NOT NULL, CHECK IN ('draft', 'on_review', 'on_revision', 'accepted', 'overdue') | Текущий статус работы |
-| submitted_at | TIMESTAMPTZ | NULL | Дата отправки на ревью |
-| reviewed_at | TIMESTAMPTZ | NULL | Дата проверки преподавателем |
-| deadline | TIMESTAMPTZ | NULL | Дедлайн на момент отправки (снимок из урока) |
-| content | JSONB | NOT NULL DEFAULT '{}' | Содержимое работы: ссылки, файлы, код |
+|------|-----|-------------|----------|
+| id | UUID | PK | |
+| student_id | UUID | FK → users.id, NOT NULL | |
+| step_id | UUID | FK → steps.id, NOT NULL | Шаг, на котором создана работа |
+| status | VARCHAR(50) | NOT NULL, CHECK IN ('draft', 'submitted', 'approved', 'changes_requested', 'overdue') | Жизненный цикл |
+| work_type | VARCHAR(50) | NOT NULL, CHECK IN ('test', 'coding', 'interactive') | Тип работы |
+| content | TEXT | NULL | Ссылка, код, текст ответа |
 | reviewer_comment | TEXT | NULL | Комментарий преподавателя |
-| auto_checked | BOOLEAN | NOT NULL DEFAULT FALSE | Признак автоматической проверки |
-| created_at | TIMESTAMPTZ | NOT NULL | Дата создания записи |
-| updated_at | TIMESTAMPTZ | NOT NULL | Дата обновления записи |
+| submitted_at | TIMESTAMPTZ | NULL | Дата отправки на ревью |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
 
 **Индексы:**
-- `idx_student_works_lesson_student` ON (lesson_id, student_id)
-- `idx_student_works_status` ON (status)
 - `idx_student_works_student_id` ON (student_id)
+- `idx_student_works_step_id` ON (step_id)
+- `idx_student_works_status` ON (status)
 
 **Constraints:**
-- `CHECK (submitted_at IS NOT NULL OR status = 'draft')` — только черновик может быть без submitted_at.
-- `CHECK (status != 'draft' OR submitted_at IS NULL)` — черновик не должен иметь даты отправки.
+- `CHECK (submitted_at IS NOT NULL OR status = 'draft')` — только черновик без даты отправки.
 
-### 6. `student_progresses`
+### 10. `reviews`
 
 | Поле | Тип | Ограничения | Описание |
-|---|---|---|---|
-| id | UUID | PK | Идентификатор записи прогресса |
-| student_id | UUID | NOT NULL | Идентификатор ученика |
-| course_id | UUID | FK → courses.id, NOT NULL | Курс |
-| lesson_id | UUID | FK → lessons.id, NULL | Текущий урок (может быть NULL, если ещё не начал) |
-| is_completed | BOOLEAN | NOT NULL DEFAULT FALSE | Курс завершён |
-| started_at | TIMESTAMPTZ | NULL | Дата начала курса |
+|------|-----|-------------|----------|
+| id | UUID | PK | |
+| student_work_id | UUID | FK → student_works.id, NOT NULL | |
+| reviewer_id | UUID | FK → users.id, NOT NULL | |
+| verdict | VARCHAR(50) | NOT NULL, CHECK IN ('approved', 'changes_requested') | |
+| comment | TEXT | NULL | |
+| review_round | INTEGER | NOT NULL, CHECK (> 0) | 1 — первичное, 2+ — повторное |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+
+**Индексы:**
+- `idx_reviews_student_work_id` ON (student_work_id)
+
+### 11. `student_progresses`
+
+| Поле | Тип | Ограничения | Описание |
+|------|-----|-------------|----------|
+| id | UUID | PK | |
+| student_id | UUID | FK → users.id, NOT NULL | |
+| course_id | UUID | FK → courses.id, NOT NULL | |
+| current_lesson_id | UUID | FK → lessons.id, NULL | Текущий урок (NULL если курс завершён) |
 | completed_at | TIMESTAMPTZ | NULL | Дата завершения курса |
-| created_at | TIMESTAMPTZ | NOT NULL | Дата создания записи |
-| updated_at | TIMESTAMPTZ | NOT NULL | Дата обновления записи |
+| created_at | TIMESTAMPTZ | NOT NULL | |
+| updated_at | TIMESTAMPTZ | NOT NULL | |
 
 **Индексы:**
 - `idx_student_progresses_student_course` ON (student_id, course_id) UNIQUE
 
-### 7. `groups`
+### 12. `step_completions`
 
 | Поле | Тип | Ограничения | Описание |
-|---|---|---|---|
-| id | UUID | PK | Идентификатор группы |
-| course_id | UUID | FK → courses.id, NOT NULL, ON DELETE CASCADE | Курс, к которому привязана группа |
-| name | VARCHAR(200) | NOT NULL | Название группы (например, «9А») |
-| created_at | TIMESTAMPTZ | NOT NULL | Дата создания записи |
-| updated_at | TIMESTAMPTZ | NOT NULL | Дата обновления записи |
-
-**Индексы:**
-- `idx_groups_course_id` ON (course_id)
-
-### 8. `group_memberships`
-
-| Поле | Тип | Ограничения | Описание |
-|---|---|---|---|
-| id | UUID | PK | Идентификатор членства |
-| group_id | UUID | FK → groups.id, NOT NULL, ON DELETE CASCADE | Группа |
-| student_id | UUID | NOT NULL | Ученик |
-| created_at | TIMESTAMPTZ | NOT NULL | Дата добавления |
-
-**Индексы:**
-- `idx_group_memberships_group_student` ON (group_id, student_id) UNIQUE
-- `idx_group_memberships_student_id` ON (student_id)
+|------|-----|-------------|----------|
+| student_id | UUID | PK, FK → users.id | |
+| step_id | UUID | PK, FK → steps.id | |
+| completed_at | TIMESTAMPTZ | NOT NULL | |
 
 ---
 
 ## Связи (ER-сводка)
 
 ```
-platforms 1──N courses
-courses   1──N lessons
-courses   1──N groups
-groups    1──N group_memberships
-lessons   1──N steps
-lessons   1──N student_works
-courses   1──1 student_progresses  (per student)
-lessons   1──1 student_progresses  (current lesson, nullable)
+users 1──N courses            (author)
+users 1──N student_works      (student)
+users 1──N reviews            (reviewer)
+users 1──N course_enrollments (student)
+users 1──N student_progresses (student)
+users 1──N step_completions   (student)
+
+courses 1──N lessons
+courses 1──N course_enrollments
+courses 1──N course_group_access N──N groups
+
+lessons 1──N steps
+lessons 1──N lesson_group_deadlines (N──1 groups)
+
+steps 1──N student_works
+steps 1──N step_completions
+
+student_works 1──N reviews
 ```
 
 ---
 
 ## Примеры данных
 
-### platforms
+### users
 
-**Обычный случай:**
+**Типичный ученик:**
 ```json
 {
-  "id": "a1b2c3d4-0001-4000-8000-000000000001",
-  "name": "PracticeLab",
-  "site_url": "https://dvmn.org",
-  "created_at": "2025-01-01T00:00:00Z",
-  "updated_at": "2025-01-01T00:00:00Z"
+  "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "role": "student",
+  "name": "Иван Петров"
+}
+```
+
+**Крайний — преподаватель:**
+```json
+{
+  "id": "a1b2c3d4-0101-0202-0303-040506070809",
+  "role": "teacher",
+  "name": "Мария Иванова"
 }
 ```
 
 ### courses
 
-**Обычный случай (опубликованный курс):**
+**Опубликованный курс:**
 ```json
 {
-  "id": "b2c3d4e5-0002-4000-8000-000000000002",
-  "platform_id": "a1b2c3d4-0001-4000-8000-000000000001",
-  "title": "Python",
-  "status": "published",
-  "is_group_course": false,
-  "created_at": "2025-02-01T00:00:00Z",
-  "updated_at": "2025-02-10T00:00:00Z"
+  "id": "b1c2d3e4-1234-5678-9abc-def012345678",
+  "author_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "title": "Python-разработчик",
+  "status": "published"
 }
 ```
 
-**Крайний случай (черновик курса):**
+**Крайний — черновик:**
 ```json
 {
-  "id": "c3d4e5f6-0003-4000-8000-000000000003",
-  "platform_id": "a1b2c3d4-0001-4000-8000-000000000001",
-  "title": "Новый курс в разработке",
-  "status": "draft",
-  "is_group_course": false,
-  "created_at": "2025-03-01T00:00:00Z",
-  "updated_at": "2025-03-01T00:00:00Z"
+  "id": "c2d3e4f5-2345-6789-abcd-ef0123456789",
+  "author_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "title": "Новый курс",
+  "status": "draft"
 }
 ```
 
 ### lessons
 
-**Обычный случай (урок с дедлайном и ревью):**
+**Типичный урок:**
 ```json
 {
-  "id": "d4e5f6a7-0004-4000-8000-000000000004",
-  "course_id": "b2c3d4e5-0002-4000-8000-000000000002",
-  "title": "HTTP",
-  "ordinal_number": 1,
-  "status": "published",
-  "has_review": true,
-  "deadline": "2025-03-15T23:59:00Z",
-  "deadline_type": "hard",
-  "is_first": true,
-  "is_last": false,
-  "created_at": "2025-02-05T00:00:00Z",
-  "updated_at": "2025-02-15T00:00:00Z"
+  "id": "d3e4f5a6-3456-789a-bcde-f01234567890",
+  "course_id": "b1c2d3e4-1234-5678-9abc-def012345678",
+  "title": "Основы HTTP",
+  "position": 2,
+  "status": "published"
 }
 ```
 
-**Крайний случай (урок-черновик, без дедлайна, без ревью):**
+**Крайний — урок с жёстким дедлайном:**
 ```json
 {
-  "id": "e5f6a7b8-0005-4000-8000-000000000005",
-  "course_id": "b2c3d4e5-0002-4000-8000-000000000002",
-  "title": "Черновик урока",
-  "ordinal_number": 5,
-  "status": "draft",
-  "has_review": false,
-  "deadline": null,
-  "deadline_type": null,
-  "is_first": false,
-  "is_last": false,
-  "created_at": "2025-03-10T00:00:00Z",
-  "updated_at": "2025-03-10T00:00:00Z"
+  "id": "e4f5a6b7-4567-89ab-cdef-012345678901",
+  "course_id": "b1c2d3e4-1234-5678-9abc-def012345678",
+  "title": "Финальный проект",
+  "position": 10,
+  "deadline": "2026-06-01T23:59:00Z",
+  "deadline_type": "hard",
+  "status": "published"
 }
 ```
 
 ### steps
 
-**Обычный случай (шаг с работой ученика):**
+**Типичный шаг с работой:**
 ```json
 {
-  "id": "f6a7b8c9-0006-4000-8000-000000000006",
-  "lesson_id": "d4e5f6a7-0004-4000-8000-000000000004",
-  "type": "student_work",
-  "ordinal_number": 3,
-  "content": "{\"prompt\": \"Напиши функцию сортировки и отправь на проверку\"}",
-  "status": "published",
-  "created_at": "2025-02-06T00:00:00Z",
-  "updated_at": "2025-02-06T00:00:00Z"
+  "id": "f5a6b7c8-5678-9abc-def0-123456789012",
+  "lesson_id": "d3e4f5a6-3456-789a-bcde-f01234567890",
+  "title": "Напиши функцию сортировки",
+  "position": 3,
+  "step_type": "code",
+  "status": "published"
 }
 ```
 
-**Крайний случай (черновик шага внутри опубликованного урока):**
+**Крайний — черновик шага:**
 ```json
 {
-  "id": "a7b8c9d0-0007-4000-8000-000000000007",
-  "lesson_id": "d4e5f6a7-0004-4000-8000-000000000004",
-  "type": "video",
-  "ordinal_number": 4,
-  "content": "{\"video_url\": \"https://example.com/lecture.mp4\"}",
-  "status": "draft",
-  "created_at": "2025-02-07T00:00:00Z",
-  "updated_at": "2025-02-07T00:00:00Z"
+  "id": "a6b7c8d9-6789-abcd-ef01-234567890123",
+  "lesson_id": "d3e4f5a6-3456-789a-bcde-f01234567890",
+  "title": "Экспериментальное задание",
+  "position": 4,
+  "step_type": "interactive",
+  "status": "draft"
 }
 ```
 
 ### student_works
 
-**Обычный случай (работа на ревью):**
+**Типичная работа на ревью:**
 ```json
 {
-  "id": "b8c9d0e1-0008-4000-8000-000000000008",
-  "lesson_id": "d4e5f6a7-0004-4000-8000-000000000004",
-  "student_id": "u001-0000-0000-0000-000000000001",
-  "status": "on_review",
-  "submitted_at": "2025-03-14T12:00:00Z",
-  "reviewed_at": null,
-  "deadline": "2025-03-15T23:59:00Z",
-  "content": "{\"code\": \"def sort(arr): return sorted(arr)\"}",
-  "reviewer_comment": null,
-  "auto_checked": false,
-  "created_at": "2025-03-14T11:00:00Z",
-  "updated_at": "2025-03-14T12:00:00Z"
+  "id": "b7c8d9e0-789a-bcde-f012-345678901234",
+  "student_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "step_id": "f5a6b7c8-5678-9abc-def0-123456789012",
+  "status": "submitted",
+  "work_type": "coding",
+  "content": "https://github.com/ivanpetrov/sorting",
+  "submitted_at": "2026-05-10T14:30:00Z"
 }
 ```
 
-**Крайний случай (ученик не сдал работу — записи о работе нет):**
+**Крайний — черновик (не отправлен):**
+```json
+{
+  "id": "c8d9e0f1-89ab-cdef-0123-456789012345",
+  "student_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "step_id": "a6b7c8d9-6789-abcd-ef01-234567890123",
+  "status": "draft",
+  "work_type": "interactive",
+  "content": null,
+  "submitted_at": null
+}
+```
 
-Для урока с дедлайном, если ученик не сдал работу, запись в `student_works` отсутствует. Статус просрочки фиксируется по правилу: `deadline < NOW()` и отсутствие `student_works` для пары (lesson_id, student_id).
+### reviews
 
-Пример запроса для выявления просрочек:
-```sql
-SELECT l.id AS lesson_id, sp.student_id
-FROM lessons l
-JOIN student_progresses sp ON sp.course_id = l.course_id
-WHERE l.deadline < NOW()
-  AND l.status = 'published'
-  AND NOT EXISTS (
-    SELECT 1 FROM student_works sw
-    WHERE sw.lesson_id = l.id AND sw.student_id = sp.student_id
-  );
+**Типичное первичное ревью:**
+```json
+{
+  "id": "d9e0f1a2-9abc-def0-1234-567890123456",
+  "student_work_id": "b7c8d9e0-789a-bcde-f012-345678901234",
+  "reviewer_id": "a1b2c3d4-0101-0202-0303-040506070809",
+  "verdict": "changes_requested",
+  "comment": "Поправь обработку краевых случаев",
+  "review_round": 1
+}
+```
+
+**Крайний — повторное ревью (принято):**
+```json
+{
+  "id": "e0f1a2b3-0abc-def0-1234-567890123457",
+  "student_work_id": "b7c8d9e0-789a-bcde-f012-345678901234",
+  "reviewer_id": "a1b2c3d4-0101-0202-0303-040506070809",
+  "verdict": "approved",
+  "comment": "Замечания исправлены",
+  "review_round": 2
+}
 ```
 
 ### student_progresses
 
-**Обычный случай (ученик начал курс, на первом уроке):**
+**Типичный — ученик в процессе:**
 ```json
 {
-  "id": "c9d0e1f2-0009-4000-8000-000000000009",
-  "student_id": "u001-0000-0000-0000-000000000001",
-  "course_id": "b2c3d4e5-0002-4000-8000-000000000002",
-  "lesson_id": "d4e5f6a7-0004-4000-8000-000000000004",
-  "is_completed": false,
-  "started_at": "2025-03-01T10:00:00Z",
-  "completed_at": null,
-  "created_at": "2025-03-01T10:00:00Z",
-  "updated_at": "2025-03-01T10:00:00Z"
+  "id": "f0a1b2c3-0abc-def0-1234-567890123458",
+  "student_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "course_id": "b1c2d3e4-1234-5678-9abc-def012345678",
+  "current_lesson_id": "d3e4f5a6-3456-789a-bcde-f01234567890"
 }
 ```
 
-**Крайний случай (ученик ещё не начинал курс — записи нет):**
-
-Пока ученик не начал прохождение курса, запись в `student_progresses` отсутствует. Она создаётся в момент начала.
-
-### groups
-
-**Обычный случай:**
+**Крайний — курс завершён:**
 ```json
 {
-  "id": "d0e1f2a3-0010-4000-8000-000000000010",
-  "course_id": "b2c3d4e5-0002-4000-8000-000000000002",
-  "name": "9А",
-  "created_at": "2025-01-15T00:00:00Z",
-  "updated_at": "2025-01-15T00:00:00Z"
+  "id": "a1b2c3d4-0abc-def0-1234-567890123459",
+  "student_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "course_id": "b1c2d3e4-1234-5678-9abc-def012345678",
+  "current_lesson_id": null,
+  "completed_at": "2026-05-20T10:00:00Z"
 }
 ```
 
-### group_memberships
+### step_completions
 
-**Обычный случай:**
+**Типичная запись:**
 ```json
 {
-  "id": "e1f2a3b4-0011-4000-8000-000000000011",
-  "group_id": "d0e1f2a3-0010-4000-8000-000000000010",
-  "student_id": "u001-0000-0000-0000-000000000001",
-  "created_at": "2025-01-16T00:00:00Z"
+  "student_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
+  "step_id": "f5a6b7c8-5678-9abc-def0-123456789012",
+  "completed_at": "2026-05-09T16:45:00Z"
 }
 ```

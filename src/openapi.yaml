@@ -7,10 +7,10 @@ info:
     Все идентификаторы — UUID v4 в строковом представлении.
 
 paths:
-  /platforms/{id}:
+  /users/{id}:
     get:
-      operationId: getPlatform
-      summary: Получить платформу по ID
+      operationId: getUser
+      summary: Получить пользователя по ID
       parameters:
         - name: id
           in: path
@@ -18,22 +18,22 @@ paths:
           schema:
             type: string
             format: uuid
-            example: "a1b2c3d4-0001-4000-8000-000000000001"
+            example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
       responses:
         "200":
-          description: Платформа найдена
+          description: Пользователь найден
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Platform"
+                $ref: "#/components/schemas/User"
               example:
-                id: "a1b2c3d4-0001-4000-8000-000000000001"
-                name: "PracticeLab"
-                site_url: "https://dvmn.org"
-                created_at: "2025-01-01T00:00:00Z"
-                updated_at: "2025-01-01T00:00:00Z"
+                id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                role: "student"
+                name: "Иван Петров"
+                created_at: "2026-01-10T08:00:00Z"
+                updated_at: "2026-01-10T08:00:00Z"
         "404":
-          description: Платформа не найдена
+          description: Пользователь не найден
           content:
             application/json:
               schema:
@@ -50,7 +50,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: "b2c3d4e5-0002-4000-8000-000000000002"
+            example: "b1c2d3e4-1234-5678-9abc-def012345678"
       responses:
         "200":
           description: Курс найден
@@ -59,13 +59,12 @@ paths:
               schema:
                 $ref: "#/components/schemas/Course"
               example:
-                id: "b2c3d4e5-0002-4000-8000-000000000002"
-                platform_id: "a1b2c3d4-0001-4000-8000-000000000001"
-                title: "Python"
+                id: "b1c2d3e4-1234-5678-9abc-def012345678"
+                author_id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                title: "Python-разработчик"
                 status: "published"
-                is_group_course: false
-                created_at: "2025-02-01T00:00:00Z"
-                updated_at: "2025-02-10T00:00:00Z"
+                created_at: "2026-02-01T00:00:00Z"
+                updated_at: "2026-02-10T00:00:00Z"
         "404":
           description: Курс не найден
           content:
@@ -84,7 +83,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: "d4e5f6a7-0004-4000-8000-000000000004"
+            example: "d3e4f5a6-3456-789a-bcde-f01234567890"
       responses:
         "200":
           description: Урок найден
@@ -93,18 +92,15 @@ paths:
               schema:
                 $ref: "#/components/schemas/Lesson"
               example:
-                id: "d4e5f6a7-0004-4000-8000-000000000004"
-                course_id: "b2c3d4e5-0002-4000-8000-000000000002"
-                title: "HTTP"
-                ordinal_number: 1
+                id: "d3e4f5a6-3456-789a-bcde-f01234567890"
+                course_id: "b1c2d3e4-1234-5678-9abc-def012345678"
+                title: "Основы HTTP"
+                position: 2
                 status: "published"
-                has_review: true
-                deadline: "2025-03-15T23:59:00Z"
-                deadline_type: "hard"
-                is_first: true
-                is_last: false
-                created_at: "2025-02-05T00:00:00Z"
-                updated_at: "2025-02-15T00:00:00Z"
+                deadline: null
+                deadline_type: null
+                created_at: "2026-02-05T00:00:00Z"
+                updated_at: "2026-02-15T00:00:00Z"
         "404":
           description: Урок не найден
           content:
@@ -123,7 +119,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: "f6a7b8c9-0006-4000-8000-000000000006"
+            example: "f5a6b7c8-5678-9abc-def0-123456789012"
       responses:
         "200":
           description: Шаг найден
@@ -132,15 +128,14 @@ paths:
               schema:
                 $ref: "#/components/schemas/Step"
               example:
-                id: "f6a7b8c9-0006-4000-8000-000000000006"
-                lesson_id: "d4e5f6a7-0004-4000-8000-000000000004"
-                type: "student_work"
-                ordinal_number: 3
-                content:
-                  prompt: "Напиши функцию сортировки и отправь на проверку"
+                id: "f5a6b7c8-5678-9abc-def0-123456789012"
+                lesson_id: "d3e4f5a6-3456-789a-bcde-f01234567890"
+                title: "Напиши функцию сортировки"
+                position: 3
+                step_type: "code"
                 status: "published"
-                created_at: "2025-02-06T00:00:00Z"
-                updated_at: "2025-02-06T00:00:00Z"
+                created_at: "2026-02-06T00:00:00Z"
+                updated_at: "2026-02-06T00:00:00Z"
         "404":
           description: Шаг не найден
           content:
@@ -159,7 +154,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: "b8c9d0e1-0008-4000-8000-000000000008"
+            example: "b7c8d9e0-789a-bcde-f012-345678901234"
       responses:
         "200":
           description: Работа ученика найдена
@@ -168,21 +163,51 @@ paths:
               schema:
                 $ref: "#/components/schemas/StudentWork"
               example:
-                id: "b8c9d0e1-0008-4000-8000-000000000008"
-                lesson_id: "d4e5f6a7-0004-4000-8000-000000000004"
-                student_id: "u001-0000-0000-0000-000000000001"
-                status: "on_review"
-                submitted_at: "2025-03-14T12:00:00Z"
-                reviewed_at: null
-                deadline: "2025-03-15T23:59:00Z"
-                content:
-                  code: "def sort(arr): return sorted(arr)"
-                reviewer_comment: null
-                auto_checked: false
-                created_at: "2025-03-14T11:00:00Z"
-                updated_at: "2025-03-14T12:00:00Z"
+                id: "b7c8d9e0-789a-bcde-f012-345678901234"
+                student_id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                step_id: "f5a6b7c8-5678-9abc-def0-123456789012"
+                status: "submitted"
+                work_type: "coding"
+                content: "https://github.com/ivanpetrov/sorting"
+                submitted_at: "2026-05-10T14:30:00Z"
+                created_at: "2026-05-10T12:00:00Z"
+                updated_at: "2026-05-10T14:30:00Z"
         "404":
           description: Работа ученика не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /reviews/{id}:
+    get:
+      operationId: getReview
+      summary: Получить ревью по ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "d9e0f1a2-9abc-def0-1234-567890123456"
+      responses:
+        "200":
+          description: Ревью найдено
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Review"
+              example:
+                id: "d9e0f1a2-9abc-def0-1234-567890123456"
+                student_work_id: "b7c8d9e0-789a-bcde-f012-345678901234"
+                reviewer_id: "a1b2c3d4-0101-0202-0303-040506070809"
+                verdict: "changes_requested"
+                comment: "Поправь обработку краевых случаев"
+                review_round: 1
+                created_at: "2026-05-11T09:00:00Z"
+        "404":
+          description: Ревью не найдено
           content:
             application/json:
               schema:
@@ -199,7 +224,7 @@ paths:
           schema:
             type: string
             format: uuid
-            example: "c9d0e1f2-0009-4000-8000-000000000009"
+            example: "f0a1b2c3-0abc-def0-1234-567890123458"
       responses:
         "200":
           description: Прогресс найден
@@ -208,15 +233,13 @@ paths:
               schema:
                 $ref: "#/components/schemas/StudentProgress"
               example:
-                id: "c9d0e1f2-0009-4000-8000-000000000009"
-                student_id: "u001-0000-0000-0000-000000000001"
-                course_id: "b2c3d4e5-0002-4000-8000-000000000002"
-                lesson_id: "d4e5f6a7-0004-4000-8000-000000000004"
-                is_completed: false
-                started_at: "2025-03-01T10:00:00Z"
+                id: "f0a1b2c3-0abc-def0-1234-567890123458"
+                student_id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                course_id: "b1c2d3e4-1234-5678-9abc-def012345678"
+                current_lesson_id: "d3e4f5a6-3456-789a-bcde-f01234567890"
                 completed_at: null
-                created_at: "2025-03-01T10:00:00Z"
-                updated_at: "2025-03-01T10:00:00Z"
+                created_at: "2026-03-01T10:00:00Z"
+                updated_at: "2026-03-01T10:00:00Z"
         "404":
           description: Прогресс не найден
           content:
@@ -245,10 +268,9 @@ paths:
                 $ref: "#/components/schemas/Group"
               example:
                 id: "d0e1f2a3-0010-4000-8000-000000000010"
-                course_id: "b2c3d4e5-0002-4000-8000-000000000002"
                 name: "9А"
-                created_at: "2025-01-15T00:00:00Z"
-                updated_at: "2025-01-15T00:00:00Z"
+                created_at: "2026-01-15T00:00:00Z"
+                updated_at: "2026-01-15T00:00:00Z"
         "404":
           description: Группа не найдена
           content:
@@ -268,17 +290,21 @@ components:
       required:
         - error
 
-    Platform:
+    User:
       type: object
       properties:
         id:
           type: string
           format: uuid
+        role:
+          type: string
+          enum:
+            - student
+            - teacher
+            - admin
+            - course_author
         name:
           type: string
-        site_url:
-          type: string
-          format: uri
         created_at:
           type: string
           format: date-time
@@ -287,8 +313,8 @@ components:
           format: date-time
       required:
         - id
+        - role
         - name
-        - site_url
         - created_at
         - updated_at
 
@@ -298,19 +324,20 @@ components:
         id:
           type: string
           format: uuid
-        platform_id:
+        author_id:
           type: string
           format: uuid
         title:
           type: string
+        description:
+          type: string
+          nullable: true
         status:
           type: string
           enum:
             - draft
             - published
             - archived
-        is_group_course:
-          type: boolean
         created_at:
           type: string
           format: date-time
@@ -319,10 +346,9 @@ components:
           format: date-time
       required:
         - id
-        - platform_id
+        - author_id
         - title
         - status
-        - is_group_course
         - created_at
         - updated_at
 
@@ -337,15 +363,13 @@ components:
           format: uuid
         title:
           type: string
-        ordinal_number:
+        position:
           type: integer
         status:
           type: string
           enum:
             - draft
             - published
-        has_review:
-          type: boolean
         deadline:
           type: string
           format: date-time
@@ -356,10 +380,6 @@ components:
             - soft
             - hard
           nullable: true
-        is_first:
-          type: boolean
-        is_last:
-          type: boolean
         created_at:
           type: string
           format: date-time
@@ -370,11 +390,8 @@ components:
         - id
         - course_id
         - title
-        - ordinal_number
+        - position
         - status
-        - has_review
-        - is_first
-        - is_last
         - created_at
         - updated_at
 
@@ -387,20 +404,24 @@ components:
         lesson_id:
           type: string
           format: uuid
-        type:
+        title:
+          type: string
+        position:
+          type: integer
+        step_type:
           type: string
           enum:
-            - text
-            - video
+            - reading
+            - quiz
+            - code
+            - interactive
             - checklist
             - illustration
-            - student_work
-            - quiz
-        ordinal_number:
-          type: integer
+            - video
+          nullable: true
         content:
-          type: object
-          description: JSON-объект с содержимым шага (зависит от типа)
+          type: string
+          nullable: true
         status:
           type: string
           enum:
@@ -415,9 +436,8 @@ components:
       required:
         - id
         - lesson_id
-        - type
-        - ordinal_number
-        - content
+        - title
+        - position
         - status
         - created_at
         - updated_at
@@ -428,40 +448,36 @@ components:
         id:
           type: string
           format: uuid
-        lesson_id:
+        student_id:
           type: string
           format: uuid
-        student_id:
+        step_id:
           type: string
           format: uuid
         status:
           type: string
           enum:
             - draft
-            - on_review
-            - on_revision
-            - accepted
+            - submitted
+            - approved
+            - changes_requested
             - overdue
+        work_type:
+          type: string
+          enum:
+            - test
+            - coding
+            - interactive
+        content:
+          type: string
+          nullable: true
+        reviewer_comment:
+          type: string
+          nullable: true
         submitted_at:
           type: string
           format: date-time
           nullable: true
-        reviewed_at:
-          type: string
-          format: date-time
-          nullable: true
-        deadline:
-          type: string
-          format: date-time
-          nullable: true
-        content:
-          type: object
-          description: JSON-объект с содержимым работы (код, ссылки, файлы)
-        reviewer_comment:
-          type: string
-          nullable: true
-        auto_checked:
-          type: boolean
         created_at:
           type: string
           format: date-time
@@ -470,12 +486,45 @@ components:
           format: date-time
       required:
         - id
-        - lesson_id
         - student_id
+        - step_id
         - status
-        - auto_checked
+        - work_type
         - created_at
         - updated_at
+
+    Review:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        student_work_id:
+          type: string
+          format: uuid
+        reviewer_id:
+          type: string
+          format: uuid
+        verdict:
+          type: string
+          enum:
+            - approved
+            - changes_requested
+        comment:
+          type: string
+          nullable: true
+        review_round:
+          type: integer
+        created_at:
+          type: string
+          format: date-time
+      required:
+        - id
+        - student_work_id
+        - reviewer_id
+        - verdict
+        - review_round
+        - created_at
 
     StudentProgress:
       type: object
@@ -489,15 +538,9 @@ components:
         course_id:
           type: string
           format: uuid
-        lesson_id:
+        current_lesson_id:
           type: string
           format: uuid
-          nullable: true
-        is_completed:
-          type: boolean
-        started_at:
-          type: string
-          format: date-time
           nullable: true
         completed_at:
           type: string
@@ -513,7 +556,6 @@ components:
         - id
         - student_id
         - course_id
-        - is_completed
         - created_at
         - updated_at
 
@@ -521,9 +563,6 @@ components:
       type: object
       properties:
         id:
-          type: string
-          format: uuid
-        course_id:
           type: string
           format: uuid
         name:
@@ -536,7 +575,6 @@ components:
           format: date-time
       required:
         - id
-        - course_id
         - name
         - created_at
         - updated_at
