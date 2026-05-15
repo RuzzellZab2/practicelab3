@@ -7,3 +7,5 @@
 - [Урок](lesson.md)
 - [Шаг](step.md)
 - [Работа ученика](student_work.md)
+- [Ревью](review.md)
+- [Пользователь](user.md)
