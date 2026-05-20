@@ -4,7 +4,7 @@
 
 1. **Пользователь** — добавлен как самостоятельная таблица `users` с полем `role` и FK-связями для всех `student_id` / `reviewer_id`.
 2. **Автор курса** — `courses.author_id` (FK → users.id), а не роль admin.
-3. **Жизненный цикл vs тип работы** — `student_works.status` (5 значений жизненного цикла) и `work_type` (test, coding, interactive) как независимые измерения.
+3. **Жизненный цикл vs тип работы** — `student_works.status` (5 значений) и `work_type` (test, coding, interactive) как независимые измерения.
 4. **Ревью как отдельная сущность** — таблица `reviews` с `review_round` для поддержки первичных и повторных проверок.
 5. **Иерархия: Шаг → Работа ученика → Ревью** — `student_works.step_id` связывает работу с шагом, `reviews.student_work_id` — ревью с работой.
 6. **Группы как логический ярлык** — таблица `groups` без расписания, связь M:N с курсами через `course_group_access`.
@@ -30,6 +30,7 @@
 | Прогресс | `student_progresses`, `step_completions` |
 | Необязательный урок | `lessons.is_optional` |
 | Типы шагов | `steps.step_type` enum: checklist, illustration, video, student_work, quiz |
+| Запись на курс | `course_enrollments(user_id, course_id)` |
 
 ## Как это выражено в API
 
@@ -37,32 +38,31 @@
 |----------|----------|
 | `GET /users/{id}` | User |
 | `GET /courses/{id}` | Course |
+| `GET /groups/{id}` | Group |
 | `GET /lessons/{id}` | Lesson (включая `is_optional`) |
 | `GET /steps/{id}` | Step (включая `step_type`) |
 | `GET /student-works/{id}` | StudentWork (включая `max_attempts`, `current_attempt`) |
 | `GET /reviews/{id}` | Review |
 | `GET /student-progresses/{id}` | StudentProgress |
-| `GET /groups/{id}` | Group |
 
-Всего 8 endpoints, GET instance only. URI в kebab-case, ресурсы во множественном числе. Каждый возвращает 200 с примером JSON и 404.
+Всего 8 endpoints, GET instance only. URI в kebab-case, ресурсы во множественном числе.
 
 ## Несостыковки
 
 1. **Платформа — не таблица** — `platform.md` есть в концептах, но таблицы `platforms` в БД нет. Платформа неявна (единственный сервис), но расходится с ожиданием по карточке.
-2. **`course_enrollments` не описан в концептах** — в карточках нет сущности «Запись на курс», таблица добавлена в БД без концептуального обоснования.
-3. **Нет концепта «Группа»** — `groups` упоминается в `course.md` (категория «Курс с группами`) и в `user.md` (администратор управляет группами), но самостоятельного файла концепта нет.
-4. **`review_round` не описан в концептах** — в `review.md` есть категории «Первичное ревью» / «Повторное ревью», но поле `review_round` не выведено из карточки явно.
-5. **`step_completions` не следует из концептов** — таблица добавлена по решению из `questions_step8.md`, в карточках концептов такой сущности нет.
-6. **Нет категории для статуса `overdue`** — в `student_work.md` есть категория «Просроченная работа», но как статус жизненного цикла `overdue` не описан в явной схеме переходов.
-7. **`is_optional` не описан в контексте прогресса** — не зафиксировано, влияет ли пропуск необязательного урока на `student_progresses.completed_at`.
+2. **`course_enrollments` нет в API** — таблица есть в БД, но endpoint `GET /course-enrollments/` не выставлен (имеет композитный PK, не подходит под шаблон `/{id}`).
+3. **`review_round` не выведен из концептов явно** — в `review.md` есть категории «Первичное ревью» / «Повторное ревью», но поле `review_round` — интерпретация, не вытекающая прямо из карточки.
+4. **Нет категории для статуса `overdue` в жизненном цикле** — в `student_work.md` есть категория «Просроченная работа», но переход статусов (когда и как работа становится `overdue`) не описан.
+5. **`is_optional` не описан в контексте прогресса** — не зафиксировано, влияет ли пропуск необязательного урока на `student_progresses.completed_at`.
+6. **Схема не покрывает уроки по истечению дедлайна `soft`** — различие между `soft` и `hard` deadline описано в концептах, но в БД нет поля, определяющего поведение после истечения (блокировка vs предупреждение).
 
 ## Рекомендованные правки
 
-1. **Добавить концепт «Группа»** (`concepts/group.md`) — чтобы обосновать таблицы `groups`, `course_group_access`, `lesson_group_deadlines`, `course_enrollments`.
-2. **Добавить концепт «Прогресс ученика»** (`concepts/student_progress.md`) — чтобы обосновать таблицы `student_progresses` и `step_completions`.
-3. **Обосновать `course_enrollments`** — добавить категорию «Запись на курс» в `course.md` или в `user.md`.
-4. **Добавить диаграмму переходов статусов** — в `student_work.md` описать, какие переходы между статусами жизненного цикла допустимы (draft → submitted → approved/changes_requested/overdue и т.д.).
-5. **Зафиксировать влияние `is_optional` на прогресс** — в `lesson.md` или `student_progress.md` описать, что пропуск необязательного урока не блокирует завершение курса.
+1. **Добавить схему переходов статусов** — в `student_work.md` описать жизненный цикл: `draft → submitted → [approved | changes_requested]`, а также условия перехода в `overdue`.
+2. **Зафиксировать влияние `is_optional` на прогресс** — в `lesson.md` или `student_progress.md` описать, что необязательные уроки не влияют на `completed_at`.
+3. **Явно описать `review_round` в концепте** — добавить в `review.md` поле, отражающее номер раунда проверки.
+4. **Зафиксировать поведение `soft` vs `hard` дедлайна** — в `lesson.md` описать различие: hard — блокировка доступа, soft — предупреждение без блокировки.
+5. **Убрать endpoint для course_enrollments или изменить подход** — поскольку PK композитный, endpoint с одним `id` невозможен. Либо убрать, либо добавить query-параметры.
 
 ## Открытые вопросы
 
