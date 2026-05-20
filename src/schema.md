@@ -52,15 +52,7 @@
 | course_id | UUID | PK, FK → courses.id | |
 | group_id | UUID | PK, FK → groups.id | |
 
-### 5. `course_enrollments`
-
-| Поле | Тип | Ограничения | Описание |
-|------|-----|-------------|----------|
-| user_id | UUID | PK, FK → users.id | |
-| course_id | UUID | PK, FK → courses.id | |
-| enrolled_at | TIMESTAMPTZ | NOT NULL | |
-
-### 6. `lessons`
+### 5. `lessons`
 
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
@@ -79,16 +71,7 @@
 - `idx_lessons_course_id` ON (course_id)
 - `idx_lessons_course_position` ON (course_id, position) UNIQUE
 
-### 7. `lesson_group_deadlines`
-
-| Поле | Тип | Ограничения | Описание |
-|------|-----|-------------|----------|
-| lesson_id | UUID | PK, FK → lessons.id, ON DELETE CASCADE | |
-| group_id | UUID | PK, FK → groups.id, ON DELETE CASCADE | |
-| deadline | TIMESTAMPTZ | NOT NULL | |
-| deadline_type | VARCHAR(20) | NOT NULL, CHECK IN ('soft', 'hard') | |
-
-### 8. `steps`
+### 6. `steps`
 
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
@@ -106,7 +89,7 @@
 - `idx_steps_lesson_id` ON (lesson_id)
 - `idx_steps_lesson_position` ON (lesson_id, position) UNIQUE
 
-### 9. `student_works`
+### 7. `student_works`
 
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
@@ -130,9 +113,9 @@
 
 **Constraints:**
 - `CHECK (submitted_at IS NOT NULL OR status = 'draft')` — только черновик без даты отправки.
-- `CHECK (current_attempt >= 1 AND current_attempt <= max_attempts OR max_attempts IS NULL)`
+- `CHECK (current_attempt >= 1 AND (max_attempts IS NULL OR current_attempt <= max_attempts))`
 
-### 10. `reviews`
+### 8. `reviews`
 
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
@@ -146,8 +129,9 @@
 
 **Индексы:**
 - `idx_reviews_student_work_id` ON (student_work_id)
+- `idx_reviews_work_round` ON (student_work_id, review_round) UNIQUE
 
-### 11. `student_progresses`
+### 9. `student_progresses`
 
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
@@ -162,35 +146,22 @@
 **Индексы:**
 - `idx_student_progresses_student_course` ON (student_id, course_id) UNIQUE
 
-### 12. `step_completions`
-
-| Поле | Тип | Ограничения | Описание |
-|------|-----|-------------|----------|
-| student_id | UUID | PK, FK → users.id | |
-| step_id | UUID | PK, FK → steps.id | |
-| completed_at | TIMESTAMPTZ | NOT NULL | |
-
 ---
 
 ## Связи (ER-сводка)
 
 ```
-users 1──N courses            (author)
-users 1──N student_works      (student)
-users 1──N reviews            (reviewer)
-users 1──N course_enrollments (student)
-users 1──N student_progresses (student)
-users 1──N step_completions   (student)
+users 1──N courses              (author)
+users 1──N student_works        (student)
+users 1──N reviews              (reviewer)
+users 1──N student_progresses   (student)
 
 courses 1──N lessons
-courses 1──N course_enrollments
 courses 1──N course_group_access N──N groups
 
 lessons 1──N steps
-lessons 1──N lesson_group_deadlines (N──1 groups)
 
 steps 1──N student_works
-steps 1──N step_completions
 
 student_works 1──N reviews
 ```
@@ -201,7 +172,7 @@ student_works 1──N reviews
 
 ### users
 
-**Типичный ученик:**
+**Типичный — ученик:**
 ```json
 {
   "id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
@@ -221,12 +192,13 @@ student_works 1──N reviews
 
 ### courses
 
-**Опубликованный курс:**
+**Типичный — опубликованный курс:**
 ```json
 {
   "id": "b1c2d3e4-1234-5678-9abc-def012345678",
   "author_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
   "title": "Python-разработчик",
+  "description": "Полный курс по Python с нуля до продвинутого уровня",
   "status": "published"
 }
 ```
@@ -235,8 +207,9 @@ student_works 1──N reviews
 ```json
 {
   "id": "c2d3e4f5-2345-6789-abcd-ef0123456789",
-  "author_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-  "title": "Новый курс",
+  "author_id": "a1b2c3d4-0101-0202-0303-040506070809",
+  "title": "Новый курс по SQL",
+  "description": null,
   "status": "draft"
 }
 ```
@@ -251,20 +224,19 @@ student_works 1──N reviews
 }
 ```
 
-### course_enrollments
+### course_group_access
 
 **Типичная запись:**
 ```json
 {
-  "user_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
   "course_id": "b1c2d3e4-1234-5678-9abc-def012345678",
-  "enrolled_at": "2026-03-01T10:00:00Z"
+  "group_id": "d0e1f2a3-0010-4000-8000-000000000010"
 }
 ```
 
 ### lessons
 
-**Типичный урок:**
+**Типичный — опубликованный урок:**
 ```json
 {
   "id": "d3e4f5a6-3456-789a-bcde-f01234567890",
@@ -276,7 +248,7 @@ student_works 1──N reviews
 }
 ```
 
-**Крайний — необязательный урок:**
+**Крайний — необязательный урок с дедлайном:**
 ```json
 {
   "id": "e4f5a6b7-4567-89ab-cdef-012345678901",
@@ -284,13 +256,15 @@ student_works 1──N reviews
   "title": "Дополнительно: продвинутые паттерны",
   "position": 11,
   "is_optional": true,
-  "status": "published"
+  "status": "published",
+  "deadline": "2026-06-01T23:59:00Z",
+  "deadline_type": "soft"
 }
 ```
 
 ### steps
 
-**Типичный шаг с работой:**
+**Типичный — шаг с работой ученика:**
 ```json
 {
   "id": "f5a6b7c8-5678-9abc-def0-123456789012",
@@ -302,7 +276,7 @@ student_works 1──N reviews
 }
 ```
 
-**Крайний — шаг с квизом (черновик):**
+**Крайний — черновик шага:**
 ```json
 {
   "id": "a6b7c8d9-6789-abcd-ef01-234567890123",
@@ -316,7 +290,7 @@ student_works 1──N reviews
 
 ### student_works
 
-**Типичная работа на ревью:**
+**Типичная — работа на ревью:**
 ```json
 {
   "id": "b7c8d9e0-789a-bcde-f012-345678901234",
@@ -329,24 +303,23 @@ student_works 1──N reviews
 }
 ```
 
-**Крайний — работа с попытками (пересдача):**
+**Крайний — просроченная работа (не отправлена до дедлайна):**
 ```json
 {
   "id": "c8d9e0f1-89ab-cdef-0123-456789012345",
   "student_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-  "step_id": "a6b7c8d9-6789-abcd-ef01-234567890123",
-  "status": "submitted",
-  "work_type": "test",
-  "max_attempts": 3,
-  "current_attempt": 2,
-  "content": "{\"answers\": [\"A\", \"C\", \"B\"]}",
-  "submitted_at": "2026-05-12T10:00:00Z"
+  "step_id": "f5a6b7c8-5678-9abc-def0-123456789012",
+  "status": "overdue",
+  "work_type": "coding",
+  "current_attempt": 1,
+  "content": null,
+  "submitted_at": null
 }
 ```
 
 ### reviews
 
-**Типичное первичное ревью:**
+**Типичное — первичное ревью:**
 ```json
 {
   "id": "d9e0f1a2-9abc-def0-1234-567890123456",
@@ -391,16 +364,5 @@ student_works 1──N reviews
   "course_id": "b1c2d3e4-1234-5678-9abc-def012345678",
   "current_lesson_id": null,
   "completed_at": "2026-05-20T10:00:00Z"
-}
-```
-
-### step_completions
-
-**Типичная запись:**
-```json
-{
-  "student_id": "f47ac10b-58cc-4372-a567-0e02b2c3d479",
-  "step_id": "f5a6b7c8-5678-9abc-def0-123456789012",
-  "completed_at": "2026-05-09T16:45:00Z"
 }
 ```
