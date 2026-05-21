@@ -4,100 +4,112 @@
 
 | # | Решение | Обоснование |
 |---|---------|-------------|
-| 1 | Роли пользователей: `student`, `teacher`, `admin` | Категории концепта «Пользователь»: Ученик, Преподаватель, Администратор. «Автор курса» — не роль, а категория, выражена через FK `courses.author_id` |
-| 2 | Статусы курса/урока/шага: `draft`, `published` | Категории «Черновик курса/урока/шага» и «Опубликованный курс» из концептов |
-| 3 | Дедлайн урока: `deadline` (TIMESTAMPTZ) + `deadline_type` (soft/hard) | Категория «Урок с дедлайном» из концепта «Урок» |
-| 4 | Типы шагов: `checklist`, `illustration`, `video`, `student_work`, `quiz` | Категории концепта «Шаг»: чеклист, иллюстрация, видео, работа ученика, квиз. «Черновик шага» вынесен в статус, а не тип |
-| 5 | Работа ученика привязана к Шагу, а не к Уроку напрямую | Концепт «Работа ученика» вложен в Урок, но в БД — FK `student_works.step_id → steps.id`, урок → шаг → работа (косвенная связь) |
-| 6 | Статусный автомат работы: `draft→submitted→approved/changes_requested`, плюс `overdue` | Категории концепта «Работа ученика»: черновик, на ревью, проверенная, принятая, на доработке, просроченная |
-| 7 | `work_type`: `coding`, `interactive` — тест (`quiz`) не порождает `student_work` | Категории «Работа на кодирование», «Работа с интерактивным заданием», «Работа-тест» в концепте. Квиз — это тип шага, не работы |
-| 8 | Ревью: `review_round` (INTEGER, 1+), UNIQUE(student_work_id, review_round) | Категории «Первичное ревью» и «Повторное ревью» из концепта «Ревью» |
-| 9 | Прогресс ученика: `current_lesson_id` nullable, `completed_at` nullable | Категории: «Курс начат», «Курс в процессе», «Курс завершён». NULL в `current_lesson_id` = курс завершён |
-| 10 | Связь курс-группа через M:N таблицу `course_group_access` | Категория «Курс с группами» из концепта «Курс» |
+| 1 | **Роли пользователей**: `student`, `teacher`, `admin` | Категории «Ученик», «Преподаватель», «Администратор» из `user.md`. «Автор курса» не роль, а выражается FK `courses.author_id` |
+| 2 | **Статусы `draft` / `published`** у курса, урока, шага | Категории «Черновик» и «Опубликованный» из `course.md`, `lesson.md`, `step.md` |
+| 3 | **Дедлайн урока**: `deadline` + `deadline_type` (soft/hard) | Категория «Урок с дедлайном» из `lesson.md` |
+| 4 | **Типы шагов**: `checklist`, `illustration`, `video`, `student_work`, `quiz` | Категории из `step.md`. «Черновик шага» — не тип, а статус |
+| 5 | **Работа ученика привязана к шагу**, а не к уроку напрямую | `student_works.step_id → steps.id`. Урок → шаг → работа (косвенная связь) |
+| 6 | **Статусный автомат работы**: `draft→submitted→approved/changes_requested`, + `overdue` | Категории: черновик, на ревью, проверенная, принятая, на доработке, просроченная (`student_work.md`) |
+| 7 | **`work_type`**: `coding`, `interactive` | Категории «Работа на кодирование», «Работа с интерактивным заданием». Квиз — шаг, а не работа |
+| 8 | **Ревью**: `review_round` (1+), UNIQUE(student_work_id, review_round) | Категории «Первичное ревью», «Повторное ревью» из `review.md` |
+| 9 | **Прогресс**: `current_lesson_id` nullable, `completed_at` nullable | Категории «Курс начат», «Курс в процессе», «Курс завершён» из `student_progress.md` |
+| 10 | **M:N курс-группа** через `course_group_access` | Категория «Курс с группами» из `course.md` |
+| 11 | **Все `id` — UUID v4** | Соглашение контракт-пака |
+| 12 | **FK с `ON DELETE CASCADE`** | Соглашение контракт-пака |
+| 13 | **UNIQUE-индексы на `(course_id, position)`** у уроков и `(lesson_id, position)` у шагов | Обеспечивают целостность порядка внутри родителя |
+| 14 | **CHECK `submitted_at IS NOT NULL OR status = 'draft'`** | Только черновик может быть без даты отправки |
+| 15 | **CHECK `current_attempt >= 1 AND (max_attempts IS NULL OR current_attempt <= max_attempts)`** | Защита целостности попыток |
+| 16 | **Только GET instance endpoint'ы — без списков, без мутаций** | API чтения (v0.1.0), без list и mutation |
+| 17 | **`description` nullable у `courses`** | Черновик курса может не иметь описания |
+| 18 | **`step_type` nullable у `steps`** | Тип шага может быть не указан |
+| 19 | **`content` nullable у `steps` и у `student_works`** | Не все типы шагов/работ имеют содержимое |
+| 20 | **`content` у `student_works` — TEXT** | Ссылка (GitHub), код, текст — всё в одном поле |
 
 ## Как это выражено в БД (schema.md)
 
-**9 таблиц**:
+**9 таблиц:**
 
-| Таблица | Концепт | Ключевые поля |
-|---------|---------|---------------|
-| `users` | Пользователь | role (enum: student/teacher/admin), name |
-| `courses` | Курс | author_id → users, title, description, status (draft/published) |
-| `groups` | Группа | name |
-| `course_group_access` | (связь Курс↔Группа) | course_id + group_id (составной PK) |
-| `lessons` | Урок | course_id → courses, position, status, is_optional, deadline, deadline_type |
-| `steps` | Шаг | lesson_id → lessons, position, step_type (checklist/illustration/video/student_work/quiz), content, status |
-| `student_works` | Работа ученика | student_id → users, step_id → steps, status (draft/submitted/approved/changes_requested/overdue), work_type (coding/interactive), max_attempts, current_attempt, content, reviewer_comment, submitted_at |
-| `reviews` | Ревью | student_work_id → student_works, reviewer_id → users, verdict (approved/changes_requested), comment, review_round |
-| `student_progresses` | Прогресс ученика | student_id → users, course_id → courses, current_lesson_id → lessons (nullable), completed_at (nullable) |
+| Таблица | Концепт | Поля (ключевые) | Связи |
+|---------|---------|-----------------|-------|
+| `users` | Пользователь | id, role(enum), name | — |
+| `courses` | Курс | id, author_id(FK→users), title, description(null), status(enum) | lessons, course_group_access |
+| `groups` | Группа | id, name | course_group_access |
+| `course_group_access` | Курс↔Группа | course_id(FK)+group_id(FK) composite PK | courses, groups |
+| `lessons` | Урок | id, course_id(FK), title, position(CHECK>0), status, is_optional, deadline(null), deadline_type(null,enum) | steps, student_works (косвенно) |
+| `steps` | Шаг | id, lesson_id(FK), title, position(CHECK>0), step_type(null,enum), content(null), status | student_works |
+| `student_works` | Работа ученика | id, student_id(FK→users), step_id(FK→steps), status(enum), work_type(enum), max_attempts(null), current_attempt(=1), content(null), reviewer_comment(null), submitted_at(null) | reviews |
+| `reviews` | Ревью | id, student_work_id(FK), reviewer_id(FK→users), verdict(enum), comment(null), review_round(CHECK>0) | — |
+| `student_progresses` | Прогресс | id, student_id(FK→users), course_id(FK→courses), current_lesson_id(null,FK→lessons), completed_at(null) | — |
 
-**Соглашения:**
-- Все `id` — UUID v4
-- У всех таблиц: `created_at`, `updated_at` TIMESTAMPTZ
-- FK с `ON DELETE CASCADE`
-- Индексы: `idx_courses_author_id`, `idx_courses_status`, `idx_lessons_course_id`, `idx_lessons_course_position` (UNIQUE), `idx_steps_lesson_id`, `idx_steps_lesson_position` (UNIQUE), `idx_student_works_student_id`, `idx_student_works_step_id`, `idx_student_works_status`, `idx_reviews_student_work_id`, `idx_reviews_work_round` (UNIQUE), `idx_student_progresses_student_course` (UNIQUE)
-- Constraints: `student_works` CHECK (submitted_at IS NOT NULL OR status = 'draft'), CHECK (current_attempt >= 1 AND current_attempt <= max_attempts OR max_attempts IS NULL)
+**Соглашения и детали:**
+- Все `id` UUID v4, все таблицы имеют `created_at`, `updated_at` TIMESTAMPTZ
+- FK везде `ON DELETE CASCADE`
+- Индексы: 12 шт, включая 4 UNIQUE-композитных
+- 2 CHECK-constraint на `student_works`
+- ER: `users 1:N courses | student_works | reviews | student_progresses`
+- ER: `courses 1:N lessons; courses M:N groups (via course_group_access)`
+- ER: `lessons 1:N steps; steps 1:N student_works; student_works 1:N reviews`
+- ER: `lessons >── student_works` — косвенная связь через steps
 
 ## Как это выражено в API (openapi.yaml)
 
-**8 GET instance endpoint'ов** — по одному на каждую таблицу с PK-`id`:
+**8 GET instance endpoint'ов:**
 
-| Endpoint | Операция | Схема ответа |
-|----------|----------|-------------|
-| `GET /users/{id}` | getUser | User |
-| `GET /courses/{id}` | getCourse | Course |
-| `GET /lessons/{id}` | getLesson | Lesson |
-| `GET /steps/{id}` | getStep | Step |
-| `GET /student-works/{id}` | getStudentWork | StudentWork |
-| `GET /reviews/{id}` | getReview | Review |
-| `GET /student-progresses/{id}` | getStudentProgress | StudentProgress |
-| `GET /groups/{id}` | getGroup | Group |
+| Endpoint | operationId | Схема | Поля (required) |
+|----------|-------------|-------|-----------------|
+| `GET /users/{id}` | getUser | User | id, role, name, created_at, updated_at |
+| `GET /courses/{id}` | getCourse | Course | id, author_id, title, status, created_at, updated_at |
+| `GET /groups/{id}` | getGroup | Group | id, name, created_at, updated_at |
+| `GET /lessons/{id}` | getLesson | Lesson | id, course_id, title, position, is_optional, status, created_at, updated_at |
+| `GET /steps/{id}` | getStep | Step | id, lesson_id, title, position, status, created_at, updated_at |
+| `GET /student-works/{id}` | getStudentWork | StudentWork | id, student_id, step_id, status, work_type, current_attempt, created_at, updated_at |
+| `GET /reviews/{id}` | getReview | Review | id, student_work_id, reviewer_id, verdict, review_round, created_at |
+| `GET /student-progresses/{id}` | getStudentProgress | StudentProgress | id, student_id, course_id, created_at, updated_at |
 
-**Схемы (components/schemas)** — 9 схем (включая Error):
+**Схемы (9 шт: 8 сущностей + Error):**
+- Все nullable-поля из БД: в схемах `nullable: true`
+- Enum-поля: повторяют CHECK IN из БД
+- `deadline_type` у Lesson: enum (soft, hard), nullable
+- `step_type` у Step: enum (checklist, illustration, video, student_work, quiz), nullable
+- `work_type` у StudentWork: enum (coding, interactive)
+- Все статусы: enum
 
-Все схемы повторяют структуру таблиц 1:1, за исключением:
-- `course_group_access` — **не имеет** endpoint'а и схемы (составной PK, нет instance-ресурса)
-- Все поля `description`, `content`, `reviewer_comment` — nullable: true
-- В схеме `Lesson` поле `description` отсутствует (в таблице тоже нет)
-- В схеме `Step` поле `content` nullable, `step_type` nullable
-
-**Статус-коды:** только 200 (успех) и 404 (не найден). Нет:
-- list-эндпоинтов (GET /users, GET /courses и т.д.)
-- mutation-эндпоинтов (POST, PUT, DELETE, PATCH)
-- пагинации, фильтрации, сортировки
+**Чего нет в API:**
+- Нет endpoint'а для `course_group_access` (составной PK)
+- Нет list-эндпоинтов (`GET /users`, `GET /courses` и т.д.)
+- Нет mutation-эндпоинтов (POST, PUT, PATCH, DELETE)
+- Нет пагинации, фильтрации, сортировки
+- Нет query-параметров (все endpoint'ы только по path-{id})
+- Только 2 response-кода: 200, 404
 
 ## Несостыковки
 
-1. **`reviewer_comment` в `student_works` дублирует `comment` в `reviews`** — в концепте «Работа ученика» нет упоминания комментария преподавателя в структуре работы; комментарий — атрибут ревью. Поле есть и в schema.md, и в openapi.yaml.
-
-2. **В карточке «Работа ученика» есть категория «Работа-тест»**, но `work_type` enum содержит только `coding` и `interactive`. Квиз не порождает `student_work`, но категория «Работа-тест» подразумевает автоматическую проверку — в БД нет соответствующего `work_type`.
-
-3. **Концепт «Прогресс ученика» включает категорию «Шаг пройден»** (`step_completion`), но в БД нет таблицы `step_completions` и в API нет соответствующего endpoint'а. Категория описана, но не реализована.
-
-4. **`course_group_access` не имеет endpoint'а и схемы в API** — таблица есть в БД, концепт «Курс с группами» описан, но API не предоставляет доступа к этой связи.
-
-5. **В карточке «Урок» есть категория «Урок с ревью» и «Урок без ревью»**, но в БД нет поля `has_review` у `lessons`. Наличие ревью выводится косвенно через шаги → работы → ревью. API не позволяет определить, предусмотрено ли ревью для урока, не заходя в дочерние сущности.
-
-6. **Поле `max_attempts` и `current_attempt` в `student_works` не описаны в карточках** — категория «Работа с попытками» упоминает пересдачу, но не специфицирует эти поля как атрибуты. Поля присутствуют и в schema.md, и в openapi.yaml.
-
-7. **`description` у `courses` — nullable**, что соответствует «Черновику курса» (description: null в примере). Но в концепте «Курс» описание не упоминается вовсе — ни как обязательный, ни как опциональный атрибут.
+| # | Несостыковка | Концепт | БД | API | Серьёзность |
+|---|-------------|---------|----|-----|-------------|
+| 1 | **`reviewer_comment` в `student_works`** — нет упоминания в карточке «Работа ученика». Комментарий — атрибут ревью, не работы | не описан | есть поле | есть поле | **высокая** — денормализация без обоснования |
+| 2 | **Категория «Шаг пройден» (`step_completion`) в `student_progress.md`** не имеет таблицы | описана (категория) | нет таблицы | нет endpoint'а | **высокая** — висящая категория |
+| 3 | **Категория «Работа-тест»** в `student_work.md` — нет `work_type = 'test'` | описана | нет в enum | нет в enum | **средняя** — неясно, тест = квиз или отдельный тип работы |
+| 4 | **Категории «Урок с ревью» / «Урок без ревью»** — нет поля `has_review` у `lessons` | описаны | нет поля | нет поля | **средняя** — требуется косвенный вывод через шаги→работы→ревью |
+| 5 | **`course_group_access`** — таблица есть, концепт «Курс с группами» описан, но API не отдаёт эту связь | описан (категория) | есть таблица | **нет** endpoint'а и схемы | **средняя** — неполнота API |
+| 6 | **`max_attempts` / `current_attempt`** — категория «Работа с попытками» упоминает пересдачу, но поля не специфицированы | не специфицированы | есть поля | есть поля | **низкая** — техническая детализация |
+| 7 | **`description` у `courses`** — нет атрибута в карточке «Курс» | не описан | есть поле (nullable) | есть поле (nullable) | **низкая** — недокументированное поле |
+| 8 | **`users.name` — всего одно поле «Имя»** — в концепте «Пользователь» нет спецификации атрибутов. ФИО помечено out_of_scope, но `name` есть | гранично out_of_scope | есть поле | есть поле | **низкая** — возможно, `name` — это nickname/username, а не ФИО |
+| 9 | **Статус `overdue` у `student_works`** — в БД это полноценный статус. В концепте «Просроченная работа» — категория, не статус. Различие: просроченная = не отправлена в срок (`submitted_at IS NULL`), а не произвольный статус. Но БД позволяет поставить `overdue` вручную | категория (выводимый статус) | enum-статус | enum-статус | **низкая** — логическое расхождение моделирования |
 
 ## Рекомендованные правки
 
-1. **Убрать `reviewer_comment` из `student_works`** (и из schema.md, и из openapi.yaml) — дублирует `reviews.comment`, не описан в карточке «Работа ученика».
-
-2. **Добавить в карточку «Работа ученика» явное описание полей `work_type`, `max_attempts`, `current_attempt`** либо зафиксировать их как технические атрибуты вне модели ценности.
-
-3. **Ликвидировать расхождение по «Шаг пройден»**: либо добавить таблицу `step_completions` в schema.md (и endpoint в API), либо удалить категорию из карточки «Прогресс ученика».
-
-4. **Добавить endpoint `GET /course-group-access?course_id=...`** или явно задокументировать в openapi.yaml, что `course_group_access` — внутренняя таблица без публичного API.
-
-5. **Добавить в концепт «Курс» атрибут `description`** или явно пометить как out_of_scope.
+| # | Правка | Где менять | Затрагивает |
+|---|--------|-----------|-------------|
+| 1 | **Убрать `reviewer_comment` из `student_works`** | schema.md, openapi.yaml | БД, API |
+| 2 | **Решить судьбу `step_completions`**: либо удалить категорию «Шаг пройден» из `student_progress.md`, либо добавить таблицу и endpoint | student_progress.md, schema.md, openapi.yaml | Концепт, БД, API |
+| 3 | **Добавить в `student_work.md` описание полей `work_type`, `max_attempts`, `current_attempt`** или явно пометить как технические атрибуты вне модели ценности | student_work.md | Концепт |
+| 4 | **Добавить endpoint для `course_group_access`** (хотя бы query-параметр) или явно задокументировать internal-статус | openapi.yaml | API |
+| 5 | **Добавить `description` в концепт «Курс»** как опциональный атрибут или out_of_scope | course.md | Концепт |
 
 ## Открытые вопросы
 
-1. **Нужна ли таблица `step_completions`?** Категория «Шаг пройден» в концепте «Прогресс ученика» предполагает её существование, но её нет ни в БД, ни в API. Это intentional design decision или недочёт?
+1. **`step_completions`: нужна ли таблица?** Категория «Шаг пройден» есть, таблицы нет. Если прогресс по шагам не хранится — как клиент понимает, какие шаги пройдены? Или это фиксируется через `student_works` (только для шагов с работами), а остальные шаги считаются пройденными автоматически при открытии?
 
-2. **Как клиент узнаёт, есть ли у урока ревью?** Сейчас — только через обход шагов → работ → ревью. Нужен ли endpoint `GET /lessons/{id}/has-review` или поле в схеме Lesson?
+2. **Есть ли семантическая разница между `overdue` и `draft` при дедлайне?** В БД `overdue` — отдельный статус, но концепт описывает просроченную работу как «не отправлена до дедлайна». Может ли работа быть `overdue` и при этом иметь `submitted_at`? Constraint разрешает только `draft` без `submitted_at` — значит `overdue` не может быть с `submitted_at`. Тогда `overdue` = просроченный черновик. Не избыточен ли этот статус относительно `draft` + проверки дедлайна?
 
-3. **Должна ли быть поддержка `work_type = 'test'`?** Категория «Работа-тест» описана в концепте, но не имеет отражения в enum. Если тестовая работа = шаг-квиз (без student_work), то категория избыточна. Если тестовая работа ≠ квиз, то не хватает значения в enum.
+3. **Работа-тест — это шаг-квиз или отдельный `work_type`?** В концепте есть категория «Работа-тест», но `work_type` enum её не содержит. Если тест = квиз (шаг, а не работа), категория в «Работе ученика» вводит в заблуждение. Если тест ≠ квиз — не хватает `work_type: 'test'` в БД и API.
