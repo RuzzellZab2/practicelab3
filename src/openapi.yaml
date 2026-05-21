@@ -132,9 +132,9 @@ paths:
               example:
                 id: "f5a6b7c8-5678-9abc-def0-123456789012"
                 lesson_id: "d3e4f5a6-3456-789a-bcde-f01234567890"
-                title: "Напиши функцию сортировки"
+                title: "Проверь себя по чеклисту"
                 position: 3
-                step_type: "student_work"
+                step_type: "checklist"
                 status: "published"
                 created_at: "2026-02-06T00:00:00Z"
                 updated_at: "2026-02-06T00:00:00Z"
@@ -167,11 +167,9 @@ paths:
               example:
                 id: "b7c8d9e0-789a-bcde-f012-345678901234"
                 student_id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
-                step_id: "f5a6b7c8-5678-9abc-def0-123456789012"
+                lesson_id: "d3e4f5a6-3456-789a-bcde-f01234567890"
                 status: "submitted"
                 work_type: "coding"
-                max_attempts: null
-                current_attempt: 1
                 content: "https://github.com/ivanpetrov/sorting"
                 submitted_at: "2026-05-10T14:30:00Z"
                 created_at: "2026-05-10T12:00:00Z"
@@ -277,6 +275,70 @@ paths:
                 updated_at: "2026-01-15T00:00:00Z"
         "404":
           description: Группа не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /group-members:
+    get:
+      operationId: listGroupMembers
+      summary: Получить состав группы
+      parameters:
+        - name: group_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "d0e1f2a3-0010-4000-8000-000000000010"
+      responses:
+        "200":
+          description: Список участников группы
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GroupMember"
+              example:
+                - group_id: "d0e1f2a3-0010-4000-8000-000000000010"
+                  user_id: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+                - group_id: "d0e1f2a3-0010-4000-8000-000000000010"
+                  user_id: "a1b2c3d4-0101-0202-0303-040506070809"
+        "404":
+          description: Группа не найдена
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /course-group-access:
+    get:
+      operationId: listCourseGroupAccess
+      summary: Получить список групп, имеющих доступ к курсу
+      parameters:
+        - name: course_id
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: "b1c2d3e4-1234-5678-9abc-def012345678"
+      responses:
+        "200":
+          description: Список связей курс-группа
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/CourseGroupAccess"
+              example:
+                - course_id: "b1c2d3e4-1234-5678-9abc-def012345678"
+                  group_id: "d0e1f2a3-0010-4000-8000-000000000010"
+        "404":
+          description: Курс не найден
           content:
             application/json:
               schema:
@@ -419,7 +481,6 @@ components:
             - checklist
             - illustration
             - video
-            - student_work
             - quiz
           nullable: true
         content:
@@ -454,7 +515,7 @@ components:
         student_id:
           type: string
           format: uuid
-        step_id:
+        lesson_id:
           type: string
           format: uuid
         status:
@@ -464,21 +525,12 @@ components:
             - submitted
             - approved
             - changes_requested
-            - overdue
         work_type:
           type: string
           enum:
             - coding
             - interactive
-        max_attempts:
-          type: integer
-          nullable: true
-        current_attempt:
-          type: integer
         content:
-          type: string
-          nullable: true
-        reviewer_comment:
           type: string
           nullable: true
         submitted_at:
@@ -494,10 +546,9 @@ components:
       required:
         - id
         - student_id
-        - step_id
+        - lesson_id
         - status
         - work_type
-        - current_attempt
         - created_at
         - updated_at
 
@@ -586,3 +637,29 @@ components:
         - name
         - created_at
         - updated_at
+
+    GroupMember:
+      type: object
+      properties:
+        group_id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+      required:
+        - group_id
+        - user_id
+
+    CourseGroupAccess:
+      type: object
+      properties:
+        course_id:
+          type: string
+          format: uuid
+        group_id:
+          type: string
+          format: uuid
+      required:
+        - course_id
+        - group_id
