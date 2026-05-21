@@ -306,7 +306,6 @@ components:
             - student
             - teacher
             - admin
-            - course_author
         name:
           type: string
         created_at:
@@ -469,7 +468,6 @@ components:
         work_type:
           type: string
           enum:
-            - test
             - coding
             - interactive
         max_attempts:

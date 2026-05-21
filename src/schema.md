@@ -15,7 +15,7 @@
 | Поле | Тип | Ограничения | Описание |
 |------|-----|-------------|----------|
 | id | UUID | PK | |
-| role | VARCHAR(50) | NOT NULL, CHECK IN ('student', 'teacher', 'admin', 'course_author') | Роль пользователя |
+| role | VARCHAR(50) | NOT NULL, CHECK IN ('student', 'teacher', 'admin') | Роль пользователя |
 | name | VARCHAR(255) | NOT NULL | Имя |
 | created_at | TIMESTAMPTZ | NOT NULL | |
 | updated_at | TIMESTAMPTZ | NOT NULL | |
@@ -97,7 +97,7 @@
 | student_id | UUID | FK → users.id, NOT NULL | |
 | step_id | UUID | FK → steps.id, NOT NULL | Шаг, на котором создана работа |
 | status | VARCHAR(50) | NOT NULL, CHECK IN ('draft', 'submitted', 'approved', 'changes_requested', 'overdue') | Жизненный цикл |
-| work_type | VARCHAR(50) | NOT NULL, CHECK IN ('test', 'coding', 'interactive') | Тип работы |
+| work_type | VARCHAR(50) | NOT NULL, CHECK IN ('coding', 'interactive') | Тип работы |
 | max_attempts | INTEGER | NULL | Максимальное число попыток (для работ с попытками) |
 | current_attempt | INTEGER | NOT NULL DEFAULT 1 | Текущая попытка |
 | content | TEXT | NULL | Ссылка, код, текст ответа |
@@ -160,6 +160,7 @@ courses 1──N lessons
 courses 1──N course_group_access N──N groups
 
 lessons 1──N steps
+lessons >──N student_works      (через шаг: урок → шаг → работа)
 
 steps 1──N student_works
 
