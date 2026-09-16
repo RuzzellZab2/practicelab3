@@ -11,5 +11,6 @@
 - [Ревью](review.md)
 - [Пользователь](user.md)
 - [Ученик](student.md)
+- [Ревьюер](reviewer.md)
 - [Группа](group.md)
 - [Прогресс ученика](student_progress.md)
