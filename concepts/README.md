@@ -12,6 +12,6 @@
 - [Пользователь](user.md)
 - [Ученик](student.md)
 - [Ревьюер](reviewer.md)
-- [Автор курса](lesson_author.md)
+- [Автор курса](course_author.md)
 - [Группа](group.md)
 - [Прогресс ученика](student_progress.md)
