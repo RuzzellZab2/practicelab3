@@ -13,5 +13,7 @@
 - [Ученик](student.md)
 - [Ревьюер](reviewer.md)
 - [Автор курса](course_author.md)
+- [Администратор](admin.md)
+- [Владелец](owner.md)
 - [Группа](group.md)
 - [Прогресс ученика](student_progress.md)

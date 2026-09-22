@@ -1,0 +1,23 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=e4]:
+      - link "Мои курсы" [ref=e22] [cursor=pointer]:
+        - /url: "#/author"
+    - generic [ref=e7]:
+      - generic [ref=e8]: "Роль:"
+      - combobox "Роль:" [ref=e9]:
+        - option "Ученик"
+        - option "Автор курса" [selected]
+        - option "Ревьюер"
+        - option "Пользователь"
+  - main [ref=e10]:
+    - heading "Каталог курсов" [level=1] [ref=e11]
+    - paragraph [ref=e12]: Здесь отображаются опубликованные курсы, на которые можно записаться.
+    - article [ref=e14]:
+      - heading "Python-разработчик" [level=2] [ref=e16]
+      - generic [ref=e17]:
+        - paragraph [ref=e18]: Полный курс по Python с нуля до продвинутого уровня
+        - generic [ref=e19]: "Уроков: 2"
+      - link "Открыть курс" [ref=e21] [cursor=pointer]:
+        - /url: "#/course/c_python"

@@ -1,0 +1,34 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=e4]:
+      - link "Каталог" [ref=e263] [cursor=pointer]:
+        - /url: "#/catalog"
+      - link "Мои результаты" [ref=e264] [cursor=pointer]:
+        - /url: "#/my-reviews"
+    - generic [ref=e7]:
+      - generic [ref=e8]: "Роль:"
+      - combobox "Роль:" [ref=e9]:
+        - option "Ученик" [selected]
+        - option "Автор курса"
+        - option "Ревьюер"
+        - option "Пользователь"
+  - main [ref=e10]:
+    - heading "Python-разработчик" [level=1] [ref=e559]
+    - paragraph [ref=e560]: Полный курс по Python с нуля до продвинутого уровня
+    - generic [ref=e561]: "Пройдено уроков: 1 из 2"
+    - list [ref=e566]:
+      - listitem [ref=e567]:
+        - generic [ref=e568]:
+          - generic [ref=e569]: Урок 1. Введение в Python
+          - generic [ref=e570]:
+            - generic [ref=e571]: Пройден
+            - link "Открыть" [ref=e572] [cursor=pointer]:
+              - /url: "#/lesson/l_py_intro"
+      - listitem [ref=e573]:
+        - generic [ref=e574]:
+          - generic [ref=e575]: Урок 2. Основы HTTP · практическая работа
+          - generic [ref=e576]:
+            - generic [ref=e577]: Текущий
+            - link "Открыть" [ref=e578] [cursor=pointer]:
+              - /url: "#/lesson/l_py_http"

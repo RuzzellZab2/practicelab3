@@ -1,0 +1,40 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=e4]:
+      - link "Мои курсы" [ref=e22] [cursor=pointer]:
+        - /url: "#/author"
+    - generic [ref=e7]:
+      - generic [ref=e8]: "Роль:"
+      - combobox "Роль:" [ref=e9]:
+        - option "Ученик"
+        - option "Автор курса" [selected]
+        - option "Ревьюер"
+        - option "Пользователь"
+  - main [ref=e10]:
+    - heading "Тестовый курс аудита" [level=1] [ref=e68]
+    - generic [ref=e69]: Черновик курса
+    - generic [ref=e72]:
+      - heading "Ревьюер курса" [level=2] [ref=e73]
+      - paragraph [ref=e74]: Ревьюер не назначен
+      - generic [ref=e75]:
+        - combobox [ref=e76]:
+          - option "— выберите ревьюера —" [selected]
+          - option "Мария Иванова"
+          - option "Пётр Волков"
+        - button "Назначить" [ref=e77] [cursor=pointer]
+    - generic [ref=e78]:
+      - heading "Уроки курса" [level=2] [ref=e79]
+      - list [ref=e80]:
+        - paragraph [ref=e81]: Уроков пока нет.
+    - generic [ref=e82]:
+      - heading "Добавить урок на курс" [level=2] [ref=e83]
+      - generic [ref=e84]:
+        - generic [ref=e85]:
+          - generic [ref=e86]: Название урока
+          - textbox "Название урока" [ref=e87]:
+            - /placeholder: "Например: Введение в SQL"
+        - button "Добавить урок" [ref=e88] [cursor=pointer]
+    - generic [ref=e89]:
+      - button "Опубликовать курс" [ref=e90] [cursor=pointer]
+      - paragraph [ref=e91]: Публикация доступна, когда курс готов и назначен ревьюер.

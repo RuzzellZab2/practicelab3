@@ -1,0 +1,29 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=e4]:
+      - link "Мои курсы" [ref=e22] [cursor=pointer]:
+        - /url: "#/author"
+    - generic [ref=e7]:
+      - generic [ref=e8]: "Роль:"
+      - combobox "Роль:" [ref=e9]:
+        - option "Ученик"
+        - option "Автор курса" [selected]
+        - option "Ревьюер"
+        - option "Пользователь"
+  - main [ref=e10]:
+    - heading "Мои курсы" [level=1] [ref=e23]
+    - paragraph [ref=e47]: Загрузка…
+    - generic [ref=e37]:
+      - heading "Создать курс" [level=2] [ref=e38]
+      - generic [ref=e39]:
+        - generic [ref=e40]:
+          - generic [ref=e41]: Название
+          - textbox "Название" [ref=e42]:
+            - /placeholder: "Например: Основы SQL"
+        - generic [ref=e43]:
+          - generic [ref=e44]: Описание
+          - textbox "Описание" [ref=e45]:
+            - /placeholder: О чём этот курс
+        - button "Создать курс" [disabled] [ref=e46]
+  - generic [ref=e48]: Курс создан как черновик

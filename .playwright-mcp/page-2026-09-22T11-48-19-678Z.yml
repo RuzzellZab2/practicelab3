@@ -1,0 +1,35 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=e4]:
+      - link "Работы на ревью" [ref=e735] [cursor=pointer]:
+        - /url: "#/review"
+    - generic [ref=e7]:
+      - generic [ref=e8]: "Роль:"
+      - combobox "Роль:" [ref=e9]:
+        - option "Ученик"
+        - option "Автор курса"
+        - option "Ревьюер" [selected]
+        - option "Пользователь"
+  - main [ref=e10]:
+    - heading "Проверка работы" [level=1] [ref=e754]
+    - generic [ref=e755]:
+      - generic [ref=e756]:
+        - generic [ref=e757]:
+          - heading "Ольга Кузнецова" [level=2] [ref=e758]
+          - generic [ref=e759]: 10 мая 2026 г., 17:30
+        - paragraph [ref=e760]: Python-разработчик · Основы HTTP
+        - generic [ref=e761]:
+          - generic [ref=e762]: Решение ученика
+          - paragraph [ref=e763]: https://github.com/olga/http-client
+      - generic [ref=e764]:
+        - heading "Ревью" [level=3] [ref=e765]
+        - generic [ref=e766]:
+          - generic [ref=e767]: Комментарий
+          - textbox "Комментарий" [ref=e768]:
+            - /placeholder: Опишите замечания или подтвердите приём работы
+        - generic [ref=e769]:
+          - button "Вернуть на доработку" [ref=e770] [cursor=pointer]
+          - button "Принять работу" [ref=e771] [cursor=pointer]
+        - heading "История ревью" [level=3] [ref=e772]
+        - paragraph [ref=e773]: Ревью по этой работе ещё нет.

@@ -1,0 +1,96 @@
+- generic [ref=f1e1]:
+  - banner [ref=f1e2]:
+    - generic [ref=f1e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f1e4]:
+      - link "Мои курсы" [ref=f1e23] [cursor=pointer]:
+        - /url: "#/author"
+    - generic [ref=f1e7]:
+      - generic [ref=f1e8]: "Роль:"
+      - combobox "Роль:" [ref=f1e9]:
+        - option "Ученик"
+        - option "Автор курса" [selected]
+        - option "Ревьюер"
+        - option "Пользователь"
+  - main [ref=f1e10]:
+    - heading "Основы SQL" [level=1] [ref=f1e94]
+    - generic [ref=f1e95]: Черновик курса
+    - generic [ref=f1e98]:
+      - heading "Ревьюер курса" [level=2] [ref=f1e99]
+      - paragraph [ref=f1e100]: Ревьюер не назначен
+      - generic [ref=f1e101]:
+        - combobox [ref=f1e102]:
+          - option "— выберите ревьюера —"
+          - option "Мария Иванова"
+          - option "Пётр Волков" [selected]
+        - button "Назначить" [active] [ref=f1e103] [cursor=pointer]
+    - generic [ref=f1e104]:
+      - heading "Уроки курса" [level=2] [ref=f1e105]
+      - list [ref=f1e106]:
+        - listitem [ref=f1e107]:
+          - generic [ref=f1e108]:
+            - generic [ref=f1e109]:
+              - text: Урок 1. Запросы SELECT
+              - generic [ref=f1e110]: Черновик
+            - generic [ref=f1e111]: "шагов: 1"
+          - generic [ref=f1e112]:
+            - generic [ref=f1e113]:
+              - generic [ref=f1e114]: Название урока
+              - textbox "Название урока" [ref=f1e115]: Запросы SELECT
+            - button "Сохранить черновик" [ref=f1e116] [cursor=pointer]
+          - generic [ref=f1e117]:
+            - generic [ref=f1e118]:
+              - generic [ref=f1e119]: Дедлайн урока
+              - textbox "Дедлайн урока" [ref=f1e120]
+            - button "Установить дедлайн" [ref=f1e121] [cursor=pointer]
+          - generic [ref=f1e122]: "Шаги урока:"
+          - list [ref=f1e123]:
+            - listitem [ref=f1e124]: 1. Основы SELECT
+          - generic [ref=f1e125]:
+            - textbox "Название нового шага" [ref=f1e126]
+            - combobox [ref=f1e127]:
+              - option "Иллюстрация" [selected]
+              - option "Видео"
+              - option "Квиз"
+              - option "Чеклист самопроверки"
+              - option "Интерактивное задание"
+            - button "Добавить шаг" [ref=f1e128] [cursor=pointer]
+        - listitem [ref=f1e129]:
+          - generic [ref=f1e130]:
+            - generic [ref=f1e131]:
+              - text: Урок 2. Объединение таблиц (JOIN)
+              - generic [ref=f1e132]: Черновик
+            - generic [ref=f1e133]: "шагов: 1"
+          - generic [ref=f1e134]:
+            - generic [ref=f1e135]:
+              - generic [ref=f1e136]: Название урока
+              - textbox "Название урока" [ref=f1e137]: Объединение таблиц (JOIN)
+            - button "Сохранить черновик" [ref=f1e138] [cursor=pointer]
+          - generic [ref=f1e139]:
+            - generic [ref=f1e140]:
+              - generic [ref=f1e141]: Дедлайн урока
+              - textbox "Дедлайн урока" [ref=f1e142]
+            - button "Установить дедлайн" [ref=f1e143] [cursor=pointer]
+          - generic [ref=f1e144]: "Шаги урока:"
+          - list [ref=f1e145]:
+            - listitem [ref=f1e146]: 1. Внутреннее объединение
+          - generic [ref=f1e147]:
+            - textbox "Название нового шага" [ref=f1e148]
+            - combobox [ref=f1e149]:
+              - option "Иллюстрация" [selected]
+              - option "Видео"
+              - option "Квиз"
+              - option "Чеклист самопроверки"
+              - option "Интерактивное задание"
+            - button "Добавить шаг" [ref=f1e150] [cursor=pointer]
+    - generic [ref=f1e151]:
+      - heading "Добавить урок на курс" [level=2] [ref=f1e152]
+      - generic [ref=f1e153]:
+        - generic [ref=f1e154]:
+          - generic [ref=f1e155]: Название урока
+          - textbox "Название урока" [ref=f1e156]:
+            - /placeholder: "Например: Введение в SQL"
+        - button "Добавить урок" [ref=f1e157] [cursor=pointer]
+    - generic [ref=f1e158]:
+      - button "Опубликовать курс" [ref=f1e159] [cursor=pointer]
+      - paragraph [ref=f1e160]: Публикация доступна, когда курс готов и назначен ревьюер.
+  - generic [ref=f1e50]: Ревьюер назначен на курс

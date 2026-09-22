@@ -1,0 +1,21 @@
+- generic [active] [ref=f1e1]:
+  - banner [ref=f1e2]:
+    - generic [ref=f1e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f1e4]:
+      - link "Каталог" [ref=f1e264] [cursor=pointer]:
+        - /url: "#/catalog"
+      - link "Мои результаты" [ref=f1e265] [cursor=pointer]:
+        - /url: "#/my-reviews"
+    - generic [ref=f1e7]:
+      - generic [ref=f1e8]: "Роль:"
+      - combobox "Роль:" [ref=f1e9]:
+        - option "Ученик" [selected]
+        - option "Автор курса"
+        - option "Ревьюер"
+        - option "Пользователь"
+  - main [ref=f1e10]:
+    - navigation [ref=f1e580]:
+      - link "Python-разработчик" [ref=f1e581] [cursor=pointer]:
+        - /url: "#/course/c_python"
+      - text: / Основы HTTP
+    - heading "Основы HTTP" [level=1] [ref=f1e584]

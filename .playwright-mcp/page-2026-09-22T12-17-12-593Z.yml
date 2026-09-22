@@ -1,0 +1,72 @@
+- generic [ref=f1e1]:
+  - banner [ref=f1e2]:
+    - generic [ref=f1e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f1e4]:
+      - link "Каталог" [ref=f1e5] [cursor=pointer]:
+        - /url: "#/catalog"
+      - link "Мои результаты" [ref=f1e6] [cursor=pointer]:
+        - /url: "#/my-reviews"
+    - generic [ref=f1e7]:
+      - generic [ref=f1e8]: "Роль:"
+      - combobox "Роль:" [ref=f1e9]:
+        - option "Ученик" [selected]
+        - option "Автор курса"
+        - option "Ревьюер"
+        - option "Пользователь"
+  - main [ref=f1e10]:
+    - navigation [ref=f1e18]:
+      - link "Python-разработчик" [ref=f1e19] [cursor=pointer]:
+        - /url: "#/course/c_python"
+      - text: / Основы HTTP
+    - heading "Основы HTTP" [level=1] [ref=f1e20]
+    - generic [ref=f1e21]:
+      - generic [ref=f1e22]:
+        - generic [ref=f1e23]:
+          - generic [ref=f1e24]: Шаг 1
+          - heading "Как работает HTTP" [level=3] [ref=f1e25]
+        - generic [ref=f1e26]:
+          - paragraph [ref=f1e27]: "HTTP — протокол передачи данных между клиентом и сервером: метод запроса, заголовки и тело ответа."
+          - paragraph [ref=f1e28]: "Иллюстрация: схема «клиент — сервер»"
+          - button "Понятно, дальше" [ref=f1e29] [cursor=pointer]
+        - generic [ref=f1e30]:
+          - heading "Комментарии к шагу" [level=4] [ref=f1e31]
+          - generic [ref=f1e32]: Комментариев пока нет.
+          - textbox "Ваш комментарий к шагу" [ref=f1e34]
+          - button "Оставить комментарий" [ref=f1e36] [cursor=pointer]
+      - generic [ref=f1e37]:
+        - generic [ref=f1e38]:
+          - generic [ref=f1e39]: Шаг 2
+          - heading "Проверь себя по чеклисту" [level=3] [ref=f1e40]
+        - generic [ref=f1e41]:
+          - paragraph [ref=f1e42]: "Проверь свою работу по чеклисту:"
+          - list [ref=f1e43]:
+            - listitem [ref=f1e44]:
+              - generic [ref=f1e45]:
+                - checkbox "Запрос составлен корректно" [disabled] [ref=f1e46]
+                - text: Запрос составлен корректно
+            - listitem [ref=f1e47]:
+              - generic [ref=f1e48]:
+                - checkbox "Ответ сервера проверен" [disabled] [ref=f1e49]
+                - text: Ответ сервера проверен
+            - listitem [ref=f1e50]:
+              - generic [ref=f1e51]:
+                - checkbox "Ошибки обработаны" [disabled] [ref=f1e52]
+                - text: Ошибки обработаны
+          - button "Подтвердить выполнение" [disabled] [ref=f1e53]
+        - generic [ref=f1e54]:
+          - heading "Комментарии к шагу" [level=4] [ref=f1e55]
+          - textbox "Ваш комментарий к шагу" [disabled] [ref=f1e56]
+          - button "Оставить комментарий" [disabled] [ref=f1e58]
+    - generic [ref=f1e60]:
+      - generic [ref=f1e61]:
+        - heading "Практическая работа" [level=2] [ref=f1e62]
+        - generic [ref=f1e63]: Черновик сохранён
+      - paragraph [ref=f1e64]: Выполните задание и отправьте работу на проверку. Урок считается пройденным после того, как ревьюер примет работу.
+      - generic [ref=f1e65]:
+        - generic [ref=f1e66]: Решение (ссылка на репозиторий, код или текст)
+        - textbox "Решение (ссылка на репозиторий, код или текст)" [ref=f1e67]:
+          - /placeholder: https://github.com/...
+      - generic [ref=f1e68]:
+        - button "Сохранить черновик" [ref=f1e69] [cursor=pointer]
+        - button "Отправить на ревью" [active] [ref=f1e70] [cursor=pointer]
+  - generic [ref=f1e71]: Сначала сохраните черновик работы

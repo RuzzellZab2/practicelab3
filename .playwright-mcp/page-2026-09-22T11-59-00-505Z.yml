@@ -1,0 +1,39 @@
+- generic [ref=f1e1]:
+  - banner [ref=f1e2]:
+    - generic [ref=f1e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f1e4]:
+      - link "Работы на ревью" [ref=f1e881] [cursor=pointer]:
+        - /url: "#/review"
+    - generic [ref=f1e7]:
+      - generic [ref=f1e8]: "Роль:"
+      - combobox "Роль:" [ref=f1e9]:
+        - option "Ученик"
+        - option "Автор курса"
+        - option "Ревьюер" [selected]
+        - option "Пользователь"
+  - main [ref=f1e10]:
+    - heading "Проверка работы" [level=1] [ref=f1e893]
+    - generic [ref=f1e894]:
+      - generic [ref=f1e895]:
+        - generic [ref=f1e896]:
+          - heading "Иван Петров" [level=2] [ref=f1e897]
+          - generic [ref=f1e898]: 22 сент. 2026 г., 14:58
+        - paragraph [ref=f1e899]: Python-разработчик · Основы HTTP
+        - generic [ref=f1e900]:
+          - generic [ref=f1e901]: Решение ученика
+          - paragraph [ref=f1e902]: https://github.com/ivan/http-client
+      - generic [ref=f1e903]:
+        - heading "Ревью" [level=3] [ref=f1e904]
+        - generic [ref=f1e905]:
+          - generic [ref=f1e906]: Комментарий
+          - textbox "Комментарий" [ref=f1e907]:
+            - /placeholder: Опишите замечания или подтвердите приём работы
+            - text: Теперь всё отлично, принимаю
+        - generic [ref=f1e908]:
+          - button "Вернуть на доработку" [ref=f1e909] [cursor=pointer]
+          - button "Принять работу" [active] [ref=f1e910] [cursor=pointer]
+        - heading "История ревью" [level=3] [ref=f1e911]
+        - generic [ref=f1e912]:
+          - generic [ref=f1e913]: Раунд 1 · 22 сент. 2026 г., 14:58
+          - generic [ref=f1e914]: На доработку
+          - generic [ref=f1e915]: «Нужно добавить обработку ошибок в запросе»

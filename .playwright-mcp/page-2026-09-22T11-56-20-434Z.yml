@@ -1,0 +1,78 @@
+- generic [ref=f1e1]:
+  - banner [ref=f1e2]:
+    - generic [ref=f1e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f1e4]:
+      - link "Каталог" [ref=f1e264] [cursor=pointer]:
+        - /url: "#/catalog"
+      - link "Мои результаты" [ref=f1e265] [cursor=pointer]:
+        - /url: "#/my-reviews"
+    - generic [ref=f1e7]:
+      - generic [ref=f1e8]: "Роль:"
+      - combobox "Роль:" [ref=f1e9]:
+        - option "Ученик" [selected]
+        - option "Автор курса"
+        - option "Ревьюер"
+        - option "Пользователь"
+  - main [ref=f1e10]:
+    - navigation [ref=f1e322]:
+      - link "Python-разработчик" [ref=f1e438] [cursor=pointer]:
+        - /url: "#/course/c_python"
+      - text: / Введение в Python
+    - heading "Введение в Python" [level=1] [ref=f1e326]
+    - generic [ref=f1e327]:
+      - generic [ref=f1e439]:
+        - generic [ref=f1e440]:
+          - generic [ref=f1e441]: Шаг 1
+          - heading "Что такое Python" [level=3] [ref=f1e442]
+          - generic [ref=f1e443]: Пройден
+        - generic [ref=f1e444]:
+          - paragraph [ref=f1e445]: Python — язык общего назначения с простым синтаксисом и большой экосистемой библиотек.
+          - paragraph [ref=f1e446]: "Иллюстрация: структура интерпретатора Python"
+          - button "Понятно, дальше" [disabled] [ref=f1e447]
+        - generic [ref=f1e448]:
+          - heading "Комментарии к шагу" [level=4] [ref=f1e449]
+          - generic [ref=f1e450]: Комментариев пока нет.
+          - textbox "Ваш комментарий к шагу" [ref=f1e452]
+          - button "Оставить комментарий" [ref=f1e454] [cursor=pointer]
+      - generic [ref=f1e455]:
+        - generic [ref=f1e456]:
+          - generic [ref=f1e457]: Шаг 2
+          - heading "Циклы while и for" [level=3] [ref=f1e458]
+          - generic [ref=f1e459]: Пройден
+        - generic [ref=f1e460]:
+          - generic [ref=f1e461]: ▶ Циклы while и for (12:40)
+          - button "Видео просмотрено" [disabled] [ref=f1e462]
+        - generic [ref=f1e463]:
+          - heading "Комментарии к шагу" [level=4] [ref=f1e464]
+          - generic [ref=f1e465]: Комментариев пока нет.
+          - textbox "Ваш комментарий к шагу" [ref=f1e467]
+          - button "Оставить комментарий" [ref=f1e469] [cursor=pointer]
+      - generic [ref=f1e470]:
+        - generic [ref=f1e471]:
+          - generic [ref=f1e472]: Шаг 3
+          - heading "Квиз по синтаксису" [level=3] [ref=f1e473]
+        - generic [ref=f1e474]:
+          - paragraph [ref=f1e475]: Какой оператор перебирает элементы последовательности?
+          - list [ref=f1e476]:
+            - listitem [ref=f1e477]:
+              - generic [ref=f1e478]:
+                - radio "for" [checked] [active] [ref=f1e479]
+                - text: for
+            - listitem [ref=f1e480]:
+              - generic [ref=f1e481]:
+                - radio "while" [ref=f1e482]
+                - text: while
+            - listitem [ref=f1e483]:
+              - generic [ref=f1e484]:
+                - radio "if" [ref=f1e485]
+                - text: if
+            - listitem [ref=f1e486]:
+              - generic [ref=f1e487]:
+                - radio "switch" [ref=f1e488]
+                - text: switch
+          - button "Ответить" [ref=f1e489] [cursor=pointer]
+        - generic [ref=f1e490]:
+          - heading "Комментарии к шагу" [level=4] [ref=f1e491]
+          - generic [ref=f1e492]: Комментариев пока нет.
+          - textbox "Ваш комментарий к шагу" [ref=f1e494]
+          - button "Оставить комментарий" [ref=f1e496] [cursor=pointer]

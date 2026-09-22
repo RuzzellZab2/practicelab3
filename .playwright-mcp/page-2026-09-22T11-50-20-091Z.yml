@@ -1,0 +1,17 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=e4]:
+      - link "Работы на ревью" [ref=e958] [cursor=pointer]:
+        - /url: "#/review"
+    - generic [ref=e7]:
+      - generic [ref=e8]: "Роль:"
+      - combobox "Роль:" [ref=e9]:
+        - option "Ученик"
+        - option "Автор курса"
+        - option "Ревьюер" [selected]
+        - option "Пользователь"
+  - main [ref=e10]:
+    - heading "Работы на ревью" [level=1] [ref=e959]
+    - paragraph [ref=e960]: Работы учеников, ожидающие проверки.
+    - paragraph [ref=e962]: Загрузка…

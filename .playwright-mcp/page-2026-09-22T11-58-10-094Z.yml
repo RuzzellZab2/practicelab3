@@ -1,0 +1,36 @@
+- generic [ref=f1e1]:
+  - banner [ref=f1e2]:
+    - generic [ref=f1e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f1e4]:
+      - link "Работы на ревью" [ref=f1e688] [cursor=pointer]:
+        - /url: "#/review"
+    - generic [ref=f1e7]:
+      - generic [ref=f1e8]: "Роль:"
+      - combobox "Роль:" [ref=f1e9]:
+        - option "Ученик"
+        - option "Автор курса"
+        - option "Ревьюер" [selected]
+        - option "Пользователь"
+  - main [ref=f1e10]:
+    - heading "Проверка работы" [level=1] [ref=f1e760]
+    - generic [ref=f1e761]:
+      - generic [ref=f1e762]:
+        - generic [ref=f1e763]:
+          - heading "Иван Петров" [level=2] [ref=f1e764]
+          - generic [ref=f1e765]: 22 сент. 2026 г., 14:57
+        - paragraph [ref=f1e766]: Python-разработчик · Основы HTTP
+        - generic [ref=f1e767]:
+          - generic [ref=f1e768]: Решение ученика
+          - paragraph [ref=f1e769]: https://github.com/ivan/http-client
+      - generic [ref=f1e770]:
+        - heading "Ревью" [level=3] [ref=f1e771]
+        - generic [ref=f1e772]:
+          - generic [ref=f1e773]: Комментарий
+          - textbox "Комментарий" [ref=f1e774]:
+            - /placeholder: Опишите замечания или подтвердите приём работы
+            - text: Нужно добавить обработку ошибок в запросе
+        - generic [ref=f1e775]:
+          - button "Вернуть на доработку" [active] [ref=f1e776] [cursor=pointer]
+          - button "Принять работу" [ref=f1e777] [cursor=pointer]
+        - heading "История ревью" [level=3] [ref=f1e778]
+        - paragraph [ref=f1e779]: Ревью по этой работе ещё нет.
