@@ -9,7 +9,6 @@ const ROLE_TO_USER = {
   student: 'u_student',
   reviewer: 'u_reviewer',
   course_author: 'u_author',
-  user: 'u_plain',
 };
 
 export function switchRole(role) {

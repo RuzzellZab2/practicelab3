@@ -7,7 +7,6 @@ export const db = {
     { id: 'u_reviewer2', role: 'reviewer', name: 'Пётр Волков' },
     { id: 'u_student', role: 'student', name: 'Иван Петров' },
     { id: 'u_student2', role: 'student', name: 'Ольга Кузнецова' },
-    { id: 'u_plain', role: 'user', name: 'Алексей Соколов' },
   ],
 
   courses: [
@@ -85,8 +84,4 @@ export const db = {
   ],
 
   stepCompletions: [],
-
-  stepComments: [],
-
-  roleRequests: [],
 };

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PracticeLab — PoC</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar__brand" id="brand">PracticeLab</div>
+    <nav class="topbar__nav" id="main-nav"></nav>
+    <div class="topbar__user">
+      <label class="topbar__role-label" for="role-switch">Роль:</label>
+      <select id="role-switch" class="topbar__select" title="Переключить роль (демо)"></select>
+    </div>
+  </header>
+
+  <main id="app" class="app">
+    <div class="card">
+      <h2>Загрузка приложения…</h2>
+      <p class="muted">Если это сообщение остаётся на экране, страница открыта напрямую из файла (file://). Запустите HTTP-сервер и откройте сайт через http://.</p>
+    </div>
+  </main>
+
+  <div id="toast-root" class="toast-root"></div>
+
+  <script>
+    if (location.protocol === 'file:') {
+      document.getElementById('app').innerHTML =
+        '<div class="card">' +
+        '<h2>Требуется HTTP-сервер</h2>' +
+        '<p>Этот прототип подгружает шаблоны и скрипты динамически (fetch + import), поэтому не работает при открытии файла напрямую (file://).</p>' +
+        '<p>Запустите сервер в папке <code>poc</code>:</p>' +
+        '<pre>python3 -m http.server 8000</pre>' +
+        '<p>и откройте <a href="http://localhost:8000">http://localhost:8000</a>.</p>' +
+        '</div>';
+    }
+  </script>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

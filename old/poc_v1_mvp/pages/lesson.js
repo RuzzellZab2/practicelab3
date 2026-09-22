@@ -1,5 +1,5 @@
 import { api, isLessonPassed } from '../js/api.js';
-import { session, esc, toast, fmtDate } from '../js/core.js';
+import { session, esc, toast } from '../js/core.js';
 
 export async function render(root, params) {
   const refresh = () => render(root, params);
@@ -49,10 +49,6 @@ function stepBodyHtml(s) {
         <ul class="checklist">${opts}</ul>
         <button class="btn btn--primary" data-action="done">Ответить</button>`;
     }
-    case 'interactive':
-      return `
-        <div class="video">Интерактивное задание (симулятор)</div>
-        <button class="btn btn--primary" data-action="done">Задание выполнено</button>`;
     default:
       return `
         <p>${esc((s.content && s.content.text) || '')}</p>
@@ -80,14 +76,6 @@ async function renderSteps(container, lessonId, refresh) {
           ${isDone ? '<span class="badge badge--success">Пройден</span>' : ''}
         </div>
         <div class="step__body">${stepBodyHtml(s)}</div>
-        <div class="step-comments">
-          <h4>Комментарии к шагу</h4>
-          <div data-comments-list></div>
-          <textarea class="input" data-comment-text rows="2" placeholder="Ваш комментарий к шагу"></textarea>
-          <div class="btn-row">
-            <button class="btn btn--small" data-comment-submit>Оставить комментарий</button>
-          </div>
-        </div>
       </div>`;
   }).join('');
 
@@ -96,22 +84,11 @@ async function renderSteps(container, lessonId, refresh) {
   container.querySelectorAll('.step').forEach((stepEl) => {
     const step = steps.find((s) => s.id === stepEl.dataset.step);
     const isDone = doneSet.has(step.id);
-    const locked = !isDone && firstNotDone && step.id !== firstNotDone.id;
-
-    if (locked) {
+    if (isDone || (firstNotDone && step.id !== firstNotDone.id)) {
       stepEl.querySelectorAll('button, input, textarea, select').forEach((el) => { el.disabled = true; });
       return;
     }
-
-    if (isDone) {
-      stepEl.querySelector('.step__body')
-        .querySelectorAll('button, input, textarea, select')
-        .forEach((el) => { el.disabled = true; });
-    } else {
-      bindStep(stepEl, step, refresh);
-    }
-
-    renderStepComments(stepEl, step.id, refresh);
+    bindStep(stepEl, step, refresh);
   });
 }
 
@@ -141,31 +118,6 @@ function bindStep(stepEl, step, refresh) {
       const res = await api.completeStep(session.userId, step.id);
       toast(res.lessonPassed ? 'Урок пройден' : 'Шаг пройден', 'success');
       refresh();
-    } catch (e) {
-      toast(e.message, 'error');
-    }
-  });
-}
-
-async function renderStepComments(stepEl, stepId, refresh) {
-  const listEl = stepEl.querySelector('[data-comments-list]');
-  const comments = await api.getStepComments(stepId);
-  listEl.innerHTML = comments.length
-    ? comments.map(({ comment, author }) => `
-        <div class="step-comment">
-          <div class="step-comment__meta muted">${esc(author ? author.name : 'Ученик')} · ${fmtDate(comment.created_at)}</div>
-          <div>${esc(comment.text)}</div>
-        </div>`).join('')
-    : '<div class="muted">Комментариев пока нет.</div>';
-
-  const btn = stepEl.querySelector('[data-comment-submit]');
-  const textEl = stepEl.querySelector('[data-comment-text]');
-  btn.addEventListener('click', async () => {
-    try {
-      await api.addStepComment(stepId, session.userId, textEl.value);
-      textEl.value = '';
-      toast('Комментарий оставлен', 'success');
-      renderStepComments(stepEl, stepId, refresh);
     } catch (e) {
       toast(e.message, 'error');
     }

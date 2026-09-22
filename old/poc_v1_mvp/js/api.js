@@ -260,9 +260,9 @@ export const api = {
     await delay(450);
     const c = findCourse(courseId);
     if (!c) throw new Error('Курс не найден');
-    if (!reviewerId) throw new Error('Выберите ревьюера');
+    if (!reviewerId) throw new Error('Выберите проверяющего');
     const r = db.users.find((u) => u.id === reviewerId && u.role === 'reviewer');
-    if (!r) throw new Error('Ревьюер не найден');
+    if (!r) throw new Error('Проверяющий не найден');
     const link = db.courseReviewers.find((x) => x.course_id === courseId);
     if (link) link.reviewer_id = reviewerId;
     else db.courseReviewers.push({ course_id: courseId, reviewer_id: reviewerId });
@@ -278,7 +278,7 @@ export const api = {
       throw new Error('Курс не готов: добавьте хотя бы один урок');
     }
     if (!db.courseReviewers.some((r) => r.course_id === courseId)) {
-      throw new Error('Назначьте ревьюера перед публикацией');
+      throw new Error('Назначьте проверяющего перед публикацией');
     }
     c.status = 'published';
     db.lessons.filter((l) => l.course_id === courseId).forEach((l) => { l.status = 'published'; });
@@ -352,101 +352,5 @@ export const api = {
       recalcProgress(w.student_id, lesson.course_id);
     }
     return { ...review };
-  },
-
-  async addLesson(courseId, title) {
-    await delay(400);
-    const t = (title || '').trim();
-    if (!t) throw new Error('Введите название урока');
-    const c = findCourse(courseId);
-    if (!c) throw new Error('Курс не найден');
-    const position = db.lessons.filter((l) => l.course_id === courseId).length + 1;
-    const lesson = {
-      id: uid('l'), course_id: courseId, title: t, position,
-      is_optional: false, status: 'draft', has_work: false, deadline: null,
-    };
-    db.lessons.push(lesson);
-    return { ...lesson };
-  },
-
-  async saveLessonDraft(lessonId, title) {
-    await delay(400);
-    const t = (title || '').trim();
-    if (!t) throw new Error('Введите название урока');
-    const l = findLesson(lessonId);
-    if (!l) throw new Error('Урок не найден');
-    if (l.status === 'published') throw new Error('Опубликованный урок нельзя редактировать');
-    l.title = t;
-    return { ...l };
-  },
-
-  async getLessonSteps(lessonId) {
-    await delay(200);
-    return db.steps
-      .filter((s) => s.lesson_id === lessonId)
-      .sort((a, b) => a.position - b.position)
-      .map((s) => ({ ...s }));
-  },
-
-  async addStep(lessonId, title, stepType) {
-    await delay(400);
-    const t = (title || '').trim();
-    if (!t) throw new Error('Введите название шага');
-    const l = findLesson(lessonId);
-    if (!l) throw new Error('Урок не найден');
-    const position = db.steps.filter((s) => s.lesson_id === lessonId).length + 1;
-    const step = {
-      id: uid('s'), lesson_id: lessonId, title: t, position,
-      step_type: stepType || 'illustration', status: 'draft', content: {},
-    };
-    db.steps.push(step);
-    return { ...step };
-  },
-
-  async setLessonDeadline(lessonId, deadline) {
-    await delay(400);
-    if (!deadline) throw new Error('Укажите дедлайн урока');
-    const l = findLesson(lessonId);
-    if (!l) throw new Error('Урок не найден');
-    l.deadline = deadline;
-    return { ...l };
-  },
-
-  async getStepComments(stepId) {
-    await delay(150);
-    return db.stepComments
-      .filter((c) => c.step_id === stepId)
-      .sort((a, b) => (a.created_at || '').localeCompare(b.created_at || ''))
-      .map((c) => {
-        const u = db.users.find((x) => x.id === c.student_id);
-        return { comment: { ...c }, author: u ? { ...u } : null };
-      });
-  },
-
-  async addStepComment(stepId, studentId, text) {
-    await delay(400);
-    const t = (text || '').trim();
-    if (!t) throw new Error('Введите текст комментария');
-    const step = db.steps.find((s) => s.id === stepId);
-    if (!step) throw new Error('Шаг не найден');
-    const comment = {
-      id: uid('sc'), step_id: stepId, student_id: studentId,
-      text: t, created_at: nowIso(),
-    };
-    db.stepComments.push(comment);
-    return { ...comment };
-  },
-
-  async requestAuthorRole(userId) {
-    await delay(500);
-    if (db.roleRequests.some((r) => r.user_id === userId && r.status === 'pending')) {
-      throw new Error('Запрос уже отправлен');
-    }
-    const req = {
-      id: uid('rr'), user_id: userId, role: 'course_author',
-      status: 'pending', created_at: nowIso(),
-    };
-    db.roleRequests.push(req);
-    return { ...req };
   },
 };

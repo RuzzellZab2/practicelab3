@@ -6,7 +6,6 @@ const ROLE_HOME = {
   student: '#/catalog',
   course_author: '#/author',
   reviewer: '#/review',
-  user: '#/profile',
 };
 
 const routes = [
@@ -18,7 +17,6 @@ const routes = [
   { re: /^\/author\/course\/([\w-]+)$/, tpl: 'pages/author-course.html', load: () => import('../pages/author-course.js') },
   { re: /^\/review$/, tpl: 'pages/review.html', load: () => import('../pages/review.js') },
   { re: /^\/review\/work\/([\w-]+)$/, tpl: 'pages/review-work.html', load: () => import('../pages/review-work.js') },
-  { re: /^\/profile$/, tpl: 'pages/profile.html', load: () => import('../pages/profile.js') },
 ];
 
 const templateCache = {};
@@ -78,7 +76,6 @@ function buildNav() {
     ],
     course_author: [{ href: '#/author', label: 'Мои курсы' }],
     reviewer: [{ href: '#/review', label: 'Работы на ревью' }],
-    user: [{ href: '#/profile', label: 'Профиль' }],
   };
   nav.innerHTML = (items[session.role] || [])
     .map((i) => `<a href="${i.href}">${i.label}</a>`)
@@ -90,8 +87,7 @@ function buildRoleSwitch() {
   sel.innerHTML = `
     <option value="student">Ученик</option>
     <option value="course_author">Автор курса</option>
-    <option value="reviewer">Ревьюер</option>
-    <option value="user">Пользователь</option>`;
+    <option value="reviewer">Ревьюер</option>`;
   sel.value = session.role;
   sel.addEventListener('change', () => {
     switchRole(sel.value);

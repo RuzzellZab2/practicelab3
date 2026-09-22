@@ -15,7 +15,7 @@ export async function render(root, params) {
               <h2>${esc(course.title)}</h2>
               <span class="badge ${published ? 'badge--success' : 'badge--muted'}">${published ? 'Опубликован' : 'Черновик'}</span>
             </div>
-            <p class="muted">Уроков: ${lessonCount} · Ревьюер: ${reviewer ? esc(reviewer.name) : 'не назначен'}</p>
+            <p class="muted">Уроков: ${lessonCount} · Проверяющий: ${reviewer ? esc(reviewer.name) : 'не назначен'}</p>
             <a class="btn btn--small" href="#/author/course/${course.id}">Открыть</a>
           </div>`;
       }).join('')
