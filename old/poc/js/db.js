@@ -7,7 +7,6 @@ export const db = {
     { id: 'u_reviewer2', role: 'reviewer', name: 'Пётр Волков' },
     { id: 'u_student', role: 'student', name: 'Иван Петров' },
     { id: 'u_student2', role: 'student', name: 'Ольга Кузнецова' },
-    { id: 'u_plain', role: 'user', name: 'Алексей Соколов' },
   ],
 
   courses: [
@@ -16,21 +15,18 @@ export const db = {
       title: 'Python-разработчик',
       description: 'Курс по Python с нуля: синтаксис, HTTP и практическая работа',
       status: 'published',
-      deadline: null,
     },
     {
       id: 'c_git', author_id: 'u_author',
       title: 'Основы Git',
       description: 'Введение в систему контроля версий Git',
       status: 'published',
-      deadline: null,
     },
     {
       id: 'c_sql', author_id: 'u_author',
       title: 'Основы SQL',
       description: 'Работа с базами данных и запросами',
       status: 'draft',
-      deadline: null,
     },
   ],
 
@@ -90,8 +86,4 @@ export const db = {
   ],
 
   stepCompletions: [],
-
-  stepComments: [],
-
-  roleRequests: [],
 };

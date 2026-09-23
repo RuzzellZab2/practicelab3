@@ -9,28 +9,68 @@ const STEP_TYPES = [
   ['interactive', 'Интерактивное задание'],
 ];
 
+function fmtDeadline(deadline) {
+  if (!deadline) return '';
+  return String(deadline).replace('T', ' ');
+}
+
 export async function render(root, params) {
-  const refresh = () => render(root, params);
   const courseId = params.id;
-
-  const course = await api.getCourse(courseId);
-  document.getElementById('ac-title').textContent = course.title;
-  const isPublished = course.status === 'published';
-  document.getElementById('ac-status').innerHTML = isPublished
-    ? '<span class="badge badge--success">Опубликованный курс</span>'
-    : '<span class="badge badge--muted">Черновик курса</span>';
-
-  await renderReviewer(courseId, refresh);
+  const refresh = () => render(root, params);
+  await renderCourse(courseId, refresh);
+  await renderDeadline(courseId, refresh);
+  await renderReviewer(courseId);
   await renderLessons(courseId, refresh);
-  renderAddLessonForm(courseId, refresh);
+  bindAddLesson(courseId, refresh);
+}
+
+async function renderCourse(courseId, refresh) {
+  const { course } = await api.getAuthorCourseDetail(courseId);
+
+  document.getElementById('course-name').textContent = course.title;
+  document.getElementById('course-title').textContent = course.title;
+  document.getElementById('course-desc').textContent = course.description || '';
+
+  const published = course.status === 'published';
+  document.getElementById('course-status').innerHTML = published
+    ? '<span class="badge badge--success">Опубликованный курс</span>'
+    : '<span class="badge badge--warning">Черновик</span>';
 
   const publishBtn = document.getElementById('publish-course');
-  publishBtn.textContent = isPublished ? 'Курс опубликован' : 'Опубликовать курс';
-  publishBtn.disabled = isPublished;
+  if (published) {
+    publishBtn.disabled = true;
+    publishBtn.textContent = 'Курс опубликован';
+    return;
+  }
   publishBtn.onclick = async () => {
+    publishBtn.disabled = true;
+    publishBtn.textContent = 'Публикуем…';
     try {
       await api.publishCourse(courseId);
       toast('Курс опубликован', 'success');
+      refresh();
+    } catch (e) {
+      toast(e.message, 'error');
+      publishBtn.disabled = false;
+      publishBtn.textContent = 'Опубликовать курс';
+    }
+  };
+}
+
+async function renderDeadline(courseId, refresh) {
+  const { course } = await api.getAuthorCourseDetail(courseId);
+  const deadlineEl = document.getElementById('course-deadline');
+  deadlineEl.innerHTML = course.deadline
+    ? `<span class="badge badge--warning">Дедлайн: ${esc(fmtDeadline(course.deadline))}</span>`
+    : '<span class="muted">Дедлайн не установлен.</span>';
+
+  const input = document.getElementById('course-deadline-input');
+  input.value = course.deadline ? String(course.deadline).slice(0, 16) : '';
+
+  document.getElementById('set-deadline').onclick = async () => {
+    try {
+      await api.setCourseDeadline(courseId, input.value);
+      toast('Дедлайн установлен', 'success');
       refresh();
     } catch (e) {
       toast(e.message, 'error');
@@ -38,71 +78,59 @@ export async function render(root, params) {
   };
 }
 
-async function renderReviewer(courseId, refresh) {
-  const reviewerEl = document.getElementById('ac-reviewer');
-  const currentReviewer = await api.getCourseReviewer(courseId);
-  const reviewers = await api.listReviewers();
-  reviewerEl.innerHTML = `
-    <h2>Ревьюер курса</h2>
-    <p class="muted">${currentReviewer ? 'Назначен: <b>' + esc(currentReviewer.name) + '</b>' : 'Ревьюер не назначен'}</p>
-    <div class="btn-row">
-      <select id="reviewer-select" class="input">
-        <option value="">— выберите ревьюера —</option>
-        ${reviewers.map((r) => `<option value="${r.id}" ${currentReviewer && currentReviewer.id === r.id ? 'selected' : ''}>${esc(r.name)}</option>`).join('')}
-      </select>
-      <button class="btn" id="assign-reviewer">Назначить</button>
-    </div>`;
+async function renderReviewer(courseId) {
+  const { reviewer } = await api.getAuthorCourseDetail(courseId);
+  const current = document.getElementById('current-reviewer');
+  current.textContent = reviewer
+    ? 'Назначен: ' + reviewer.name
+    : 'Ревьюер пока не назначен.';
 
-  document.getElementById('assign-reviewer').addEventListener('click', async () => {
-    const val = document.getElementById('reviewer-select').value;
+  const reviewers = await api.listReviewers();
+  const select = document.getElementById('reviewer-select');
+  select.innerHTML = reviewers
+    .map((r) => `<option value="${r.id}">${esc(r.name)}</option>`)
+    .join('');
+
+  document.getElementById('assign-reviewer').onclick = async () => {
     try {
-      await api.assignReviewer(courseId, val);
+      const r = await api.assignReviewer(courseId, select.value);
       toast('Ревьюер назначен на курс', 'success');
-      refresh();
+      current.textContent = 'Назначен: ' + r.name;
     } catch (e) {
       toast(e.message, 'error');
     }
-  });
+  };
 }
 
 async function renderLessons(courseId, refresh) {
-  const lessonsEl = document.getElementById('ac-lessons');
-  const lessons = await api.getCourseLessons(courseId);
+  const { lessons } = await api.getAuthorCourseDetail(courseId);
+  const container = document.getElementById('course-lessons');
 
   if (!lessons.length) {
-    lessonsEl.innerHTML = '<p class="empty">Уроков пока нет.</p>';
+    container.innerHTML = '<p class="empty">Уроков пока нет.</p>';
     return;
   }
 
   let html = '';
   for (const l of lessons) {
     const steps = await api.getLessonSteps(l.id);
-    const statusBadge = l.status === 'published'
+    const published = l.status === 'published';
+    const statusBadge = published
       ? '<span class="badge badge--success">Опубликован</span>'
       : '<span class="badge badge--muted">Черновик</span>';
-    const deadlineBadge = l.deadline
-      ? `<span class="badge badge--warning">Дедлайн: ${esc(String(l.deadline).replace('T', ' '))}</span>`
-      : '';
+    const disabled = published ? 'disabled' : '';
     html += `
-      <li class="lesson" data-lesson="${l.id}">
+      <div class="lesson" data-lesson="${l.id}">
         <div class="lesson__row">
-          <div class="lesson__title">Урок ${l.position}. ${esc(l.title)} ${statusBadge}</div>
-          <span class="muted">шагов: ${steps.length}</span>
+          <div class="lesson__title">Урок ${l.position}. ${esc(l.title)}</div>
+          <span>${statusBadge}</span>
         </div>
-        ${deadlineBadge ? `<div class="card__meta">${deadlineBadge}</div>` : ''}
         <div class="btn-row">
-          <label class="field" style="flex:1">
+          <label class="field" style="flex:1; margin:0">
             <span class="field__label">Название урока</span>
-            <input class="input lesson-title-edit" type="text" value="${esc(l.title)}">
+            <input class="input lesson-title-edit" type="text" value="${esc(l.title)}" ${disabled}>
           </label>
-          <button class="btn" data-save-draft="${l.id}">Сохранить черновик</button>
-        </div>
-        <div class="btn-row">
-          <label class="field" style="flex:1">
-            <span class="field__label">Дедлайн урока</span>
-            <input class="input lesson-deadline" type="datetime-local" value="${l.deadline ? esc(String(l.deadline).slice(0, 16)) : ''}">
-          </label>
-          <button class="btn" data-set-deadline="${l.id}">Установить дедлайн</button>
+          <button class="btn" data-save-draft="${l.id}" ${disabled}>Сохранить черновик</button>
         </div>
         <div class="card__meta">Шаги урока:</div>
         <ul class="checklist">
@@ -111,17 +139,17 @@ async function renderLessons(courseId, refresh) {
             : '<li class="muted">Шагов пока нет</li>'}
         </ul>
         <div class="btn-row">
-          <input class="input step-title" type="text" placeholder="Название нового шага">
+          <input class="input step-title" type="text" placeholder="Название нового шага" style="flex:1">
           <select class="input step-type">
             ${STEP_TYPES.map(([val, label]) => `<option value="${val}">${label}</option>`).join('')}
           </select>
           <button class="btn btn--primary" data-add-step="${l.id}">Добавить шаг</button>
         </div>
-      </li>`;
+      </div>`;
   }
-  lessonsEl.innerHTML = html;
+  container.innerHTML = html;
 
-  bindLessonControls(lessonsEl, refresh);
+  bindLessonControls(container, refresh);
 }
 
 function bindLessonControls(root, refresh) {
@@ -132,20 +160,6 @@ function bindLessonControls(root, refresh) {
       try {
         await api.saveLessonDraft(btn.dataset.saveDraft, title);
         toast('Сохранённый черновик урока', 'success');
-        refresh();
-      } catch (e) {
-        toast(e.message, 'error');
-      }
-    });
-  });
-
-  root.querySelectorAll('[data-set-deadline]').forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      const card = btn.closest('[data-lesson]');
-      const deadline = card.querySelector('.lesson-deadline').value;
-      try {
-        await api.setLessonDeadline(btn.dataset.setDeadline, deadline);
-        toast('Дедлайн установлен', 'success');
         refresh();
       } catch (e) {
         toast(e.message, 'error');
@@ -169,21 +183,19 @@ function bindLessonControls(root, refresh) {
   });
 }
 
-function renderAddLessonForm(courseId, refresh) {
-  const form = document.getElementById('add-lesson-form');
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const title = form.querySelector('#lesson-title-input').value;
-    const btn = form.querySelector('button[type="submit"]');
+function bindAddLesson(courseId, refresh) {
+  document.getElementById('add-lesson').onclick = async () => {
+    const input = document.getElementById('lesson-title-input');
+    const btn = document.getElementById('add-lesson');
     btn.disabled = true;
     try {
-      await api.addLesson(courseId, title);
+      await api.addLesson(courseId, input.value);
       toast('Урок добавлен на курс', 'success');
-      form.reset();
+      input.value = '';
       refresh();
-    } catch (err) {
-      toast(err.message, 'error');
+    } catch (e) {
+      toast(e.message, 'error');
       btn.disabled = false;
     }
-  });
+  };
 }

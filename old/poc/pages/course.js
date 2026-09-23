@@ -14,10 +14,8 @@ export async function render(root, params) {
 
   const lessons = await api.getLessonsWithStatus(session.userId, courseId);
   const passedCount = lessons.filter((l) => l.passed).length;
-  const percent = lessons.length ? Math.round((passedCount / lessons.length) * 100) : 0;
-  document.getElementById('course-progress').innerHTML = `
-    <span>Пройдено уроков: ${passedCount} из ${lessons.length}</span>
-    <div class="progress__bar"><div class="progress__fill" style="width:${percent}%"></div></div>`;
+  document.getElementById('course-progress').textContent =
+    'Пройдено уроков: ' + passedCount + ' из ' + lessons.length;
 
   const container = document.getElementById('course-lessons');
   if (!lessons.length) {

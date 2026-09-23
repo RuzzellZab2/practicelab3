@@ -20,7 +20,6 @@ export async function render(root, params) {
       <article class="card">
         <div class="card__head">
           <h2 class="card__title">${esc(c.title)}</h2>
-          ${isEnrolled ? '<span class="badge badge--success">Вы записаны</span>' : ''}
         </div>
         <div class="card__body">
           <p class="card__desc">${esc(c.description || '')}</p>

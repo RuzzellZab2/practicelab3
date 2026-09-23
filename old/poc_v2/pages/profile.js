@@ -12,14 +12,14 @@ export async function render(root, params) {
         <h2>${esc(user.name)}</h2>
         <span class="badge badge--muted">Пользователь</span>
       </div>
-      <p class="muted">У вас пока нет роли на платформе. Запросите роль, чтобы создавать курсы.</p>
+      <p class="muted">У вас пока нет роли на платформе. Запросите роль, чтобы создавать курсы или проверять работы.</p>
       <div class="btn-row">
         <button class="btn btn--primary" id="request-author">Запросить роль «Автор курса»</button>
       </div>
     </div>`;
 
-  const btn = box.querySelector('#request-author');
-  btn.addEventListener('click', async () => {
+  box.querySelector('#request-author').addEventListener('click', async () => {
+    const btn = box.querySelector('#request-author');
     btn.disabled = true;
     try {
       await api.requestAuthorRole(session.userId);

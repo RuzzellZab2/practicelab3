@@ -33,7 +33,7 @@ function stepBodyHtml(s) {
         <button class="btn btn--primary" data-action="done">Видео просмотрено</button>`;
     case 'checklist': {
       const items = (s.content.items || [])
-        .map((it) => `<li><label><input type="checkbox" data-check> ${esc(it)}</label></li>`)
+        .map((it) => `<li class="check"><label><input type="checkbox" data-check> ${esc(it)}</label></li>`)
         .join('');
       return `
         <p>${esc(s.content.intro || '')}</p>
@@ -42,7 +42,7 @@ function stepBodyHtml(s) {
     }
     case 'quiz': {
       const opts = (s.content.options || [])
-        .map((o, i) => `<li><label><input type="radio" name="quiz-${s.id}" value="${i}"> ${esc(o)}</label></li>`)
+        .map((o, i) => `<li class="check"><label><input type="radio" name="quiz-${s.id}" value="${i}"> ${esc(o)}</label></li>`)
         .join('');
       return `
         <p class="quiz__q">${esc(s.content.question)}</p>
@@ -58,18 +58,6 @@ function stepBodyHtml(s) {
         <p>${esc((s.content && s.content.text) || '')}</p>
         <button class="btn btn--primary" data-action="done">Отметить как пройденный</button>`;
   }
-}
-
-function commentsBlockHtml() {
-  return `
-    <div class="step-comments">
-      <h4>Комментарии к шагу</h4>
-      <div data-comments-list></div>
-      <textarea class="input" data-comment-text rows="2" placeholder="Ваш комментарий к шагу"></textarea>
-      <div class="btn-row">
-        <button class="btn btn--small" data-comment-submit>Оставить комментарий</button>
-      </div>
-    </div>`;
 }
 
 async function renderSteps(container, lessonId, refresh) {
@@ -92,7 +80,14 @@ async function renderSteps(container, lessonId, refresh) {
           ${isDone ? '<span class="badge badge--success">Пройден</span>' : ''}
         </div>
         <div class="step__body">${stepBodyHtml(s)}</div>
-        ${commentsBlockHtml()}
+        <div class="step-comments">
+          <h4>Комментарии к шагу</h4>
+          <div data-comments-list></div>
+          <textarea class="input" data-comment-text rows="2" placeholder="Ваш комментарий к шагу"></textarea>
+          <div class="btn-row">
+            <button class="btn btn--small" data-comment-submit>Оставить комментарий</button>
+          </div>
+        </div>
       </div>`;
   }).join('');
 
@@ -103,17 +98,19 @@ async function renderSteps(container, lessonId, refresh) {
     const isDone = doneSet.has(step.id);
     const locked = !isDone && firstNotDone && step.id !== firstNotDone.id;
 
-    const bodyControls = stepEl.querySelectorAll('.step__body button, .step__body input, .step__body textarea, .step__body select');
-    if (locked || isDone) {
-      bodyControls.forEach((el) => { el.disabled = true; });
+    if (locked) {
+      stepEl.querySelectorAll('button, input, textarea, select').forEach((el) => { el.disabled = true; });
+      return;
+    }
+
+    if (isDone) {
+      stepEl.querySelector('.step__body')
+        .querySelectorAll('button, input, textarea, select')
+        .forEach((el) => { el.disabled = true; });
     } else {
       bindStep(stepEl, step, refresh);
     }
 
-    const commentControls = stepEl.querySelectorAll('.step-comments textarea, .step-comments button');
-    if (locked) {
-      commentControls.forEach((el) => { el.disabled = true; });
-    }
     renderStepComments(stepEl, step.id, refresh);
   });
 }
@@ -163,7 +160,7 @@ async function renderStepComments(stepEl, stepId, refresh) {
 
   const btn = stepEl.querySelector('[data-comment-submit]');
   const textEl = stepEl.querySelector('[data-comment-text]');
-  btn.onclick = async () => {
+  btn.addEventListener('click', async () => {
     try {
       await api.addStepComment(stepId, session.userId, textEl.value);
       textEl.value = '';
@@ -172,7 +169,7 @@ async function renderStepComments(stepEl, stepId, refresh) {
     } catch (e) {
       toast(e.message, 'error');
     }
-  };
+  });
 }
 
 function reviewBlock(latest) {

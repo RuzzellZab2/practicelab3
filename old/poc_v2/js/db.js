@@ -14,32 +14,22 @@ export const db = {
     {
       id: 'c_python', author_id: 'u_author',
       title: 'Python-разработчик',
-      description: 'Курс по Python с нуля: синтаксис, HTTP и практическая работа',
+      description: 'Полный курс по Python с нуля до продвинутого уровня',
       status: 'published',
-      deadline: null,
-    },
-    {
-      id: 'c_git', author_id: 'u_author',
-      title: 'Основы Git',
-      description: 'Введение в систему контроля версий Git',
-      status: 'published',
-      deadline: null,
     },
     {
       id: 'c_sql', author_id: 'u_author',
       title: 'Основы SQL',
       description: 'Работа с базами данных и запросами',
       status: 'draft',
-      deadline: null,
     },
   ],
 
   lessons: [
-    { id: 'l_py_intro', course_id: 'c_python', title: 'Введение в Python', position: 1, status: 'published', has_work: false },
-    { id: 'l_py_http', course_id: 'c_python', title: 'Основы HTTP', position: 2, status: 'published', has_work: true },
-    { id: 'l_git_intro', course_id: 'c_git', title: 'Введение в Git', position: 1, status: 'published', has_work: false },
-    { id: 'l_sql_select', course_id: 'c_sql', title: 'Запросы SELECT', position: 1, status: 'draft', has_work: false },
-    { id: 'l_sql_join', course_id: 'c_sql', title: 'Объединение таблиц (JOIN)', position: 2, status: 'draft', has_work: false },
+    { id: 'l_py_intro', course_id: 'c_python', title: 'Введение в Python', position: 1, is_optional: false, status: 'published', has_work: false },
+    { id: 'l_py_http', course_id: 'c_python', title: 'Основы HTTP', position: 2, is_optional: false, status: 'published', has_work: true },
+    { id: 'l_sql_select', course_id: 'c_sql', title: 'Запросы SELECT', position: 1, is_optional: false, status: 'draft', has_work: false },
+    { id: 'l_sql_join', course_id: 'c_sql', title: 'Объединение таблиц (JOIN)', position: 2, is_optional: false, status: 'draft', has_work: false },
   ],
 
   steps: [
@@ -60,8 +50,8 @@ export const db = {
       content: { text: 'HTTP — протокол передачи данных между клиентом и сервером: метод запроса, заголовки и тело ответа.', caption: 'Иллюстрация: схема «клиент — сервер»' },
     },
     {
-      id: 's_git_intro_1', lesson_id: 'l_git_intro', title: 'Что такое Git', position: 1, step_type: 'illustration', status: 'published',
-      content: { text: 'Git — распределённая система контроля версий, которая хранит историю изменений проекта.', caption: 'Иллюстрация: рабочая копия и репозиторий' },
+      id: 's_py_http_2', lesson_id: 'l_py_http', title: 'Проверь себя по чеклисту', position: 2, step_type: 'checklist', status: 'published',
+      content: { intro: 'Проверь свою работу по чеклисту:', items: ['Запрос составлен корректно', 'Ответ сервера проверен', 'Ошибки обработаны'] },
     },
     {
       id: 's_sql_select_1', lesson_id: 'l_sql_select', title: 'Основы SELECT', position: 1, step_type: 'illustration', status: 'draft',
@@ -83,6 +73,11 @@ export const db = {
   enrollments: [
     { student_id: 'u_student', course_id: 'c_python' },
     { student_id: 'u_student2', course_id: 'c_python' },
+  ],
+
+  progress: [
+    { id: 'pr_student_py', student_id: 'u_student', course_id: 'c_python', current_lesson_id: 'l_py_intro', completed_at: null },
+    { id: 'pr_student2_py', student_id: 'u_student2', course_id: 'c_python', current_lesson_id: 'l_py_http', completed_at: null },
   ],
 
   courseReviewers: [

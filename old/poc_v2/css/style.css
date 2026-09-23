@@ -53,6 +53,7 @@ h3 { font-size: 15px; margin: 12px 0 8px; }
 p { margin: 8px 0; }
 
 .muted { color: var(--muted); }
+.mb { margin-bottom: 12px; }
 .empty { color: var(--muted); padding: 24px; text-align: center; border: 1px dashed var(--border); border-radius: 10px; }
 
 /* Карточки */
@@ -107,7 +108,7 @@ p { margin: 8px 0; }
 .badge--warning { background: #fdf3e0; color: var(--warning); }
 .badge--muted { background: #eef0f3; color: var(--muted); }
 
-/* Список уроков */
+/* Списки уроков */
 .lesson-list { list-style: none; padding: 0; margin: 0; }
 .lesson {
   background: var(--card);
@@ -121,7 +122,12 @@ p { margin: 8px 0; }
 .lesson__title { font-weight: 600; }
 .lesson__right { display: flex; align-items: center; gap: 10px; }
 
+/* Прогресс */
+.progress__bar { height: 8px; background: #eef0f3; border-radius: 999px; overflow: hidden; }
+.progress__fill { height: 100%; background: var(--primary); border-radius: 999px; transition: width .3s; }
+
 /* Шаги */
+.step { opacity: 1; }
 .step--done { background: #fbfdfb; }
 .step__head { display: flex; align-items: center; gap: 10px; }
 .step__num { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
@@ -138,16 +144,6 @@ p { margin: 8px 0; }
 .checklist { list-style: none; padding: 0; margin: 8px 0; }
 .checklist li { margin: 6px 0; }
 .quiz__q { font-weight: 600; }
-
-/* Комментарии к шагу */
-.step-comments { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
-.step-comments h4 { margin: 0 0 8px; font-size: 14px; color: var(--muted); }
-.step-comment { background: #fafbfc; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin: 6px 0; }
-.step-comment__meta { font-size: 12px; }
-
-/* Прогресс */
-.progress__bar { height: 8px; background: #eef0f3; border-radius: 999px; overflow: hidden; margin: 8px 0 4px; }
-.progress__fill { height: 100%; background: var(--primary); border-radius: 999px; transition: width .3s; }
 
 /* Формы */
 .field { display: block; margin-bottom: 12px; }
@@ -173,6 +169,12 @@ select.input { width: auto; min-width: 200px; }
 .review__meta { font-size: 12px; margin-top: 4px; }
 
 .work-content { background: #fafbfc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin: 10px 0; }
+
+/* Комментарии к шагу */
+.step-comments { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+.step-comments h4 { margin: 0 0 8px; font-size: 14px; color: var(--muted); }
+.step-comment { background: #fafbfc; border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; margin: 6px 0; }
+.step-comment__meta { font-size: 12px; }
 
 .breadcrumb { margin-bottom: 12px; color: var(--muted); font-size: 14px; }
 .breadcrumb a { color: var(--primary); text-decoration: none; }
