@@ -1,0 +1,45 @@
+- generic [active] [ref=f6e1]:
+  - banner [ref=f6e2]:
+    - generic [ref=f6e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f6e4]:
+      - link "Мои курсы" [ref=f6e620] [cursor=pointer]:
+        - /url: "#/author"
+    - generic [ref=f6e7]:
+      - generic [ref=f6e8]: "Роль:"
+      - combobox "Роль:" [ref=f6e9]:
+        - option "Ученик"
+        - option "Автор курса" [selected]
+        - option "Ревьюер"
+        - option "Пользователь"
+  - main [ref=f6e10]:
+    - generic [ref=f6e661]:
+      - link "Мои курсы" [ref=f6e662] [cursor=pointer]:
+        - /url: "#/author"
+      - text: / Алгоритмы и структуры данных
+    - generic [ref=f6e663]:
+      - generic [ref=f6e664]:
+        - heading "Алгоритмы и структуры данных" [level=1] [ref=f6e665]
+        - generic [ref=f6e666]: Черновик
+      - paragraph
+      - generic [ref=f6e668]: Дедлайн не установлен.
+      - button "Опубликовать курс" [ref=f6e670] [cursor=pointer]
+    - generic [ref=f6e671]:
+      - heading "Дедлайн курса" [level=2] [ref=f6e673]
+      - paragraph [ref=f6e674]: После дедлайна ученики не смогут сдавать работы.
+      - generic [ref=f6e675]:
+        - textbox [ref=f6e676]
+        - button "Установить дедлайн" [ref=f6e677] [cursor=pointer]
+    - generic [ref=f6e678]:
+      - heading "Ревьюер курса" [level=2] [ref=f6e680]
+      - paragraph [ref=f6e681]: Назначьте ревьюера, который будет проверять работы учеников курса.
+      - paragraph
+      - generic [ref=f6e682]:
+        - combobox [ref=f6e683]
+        - button "Назначить ревьюера" [ref=f6e684] [cursor=pointer]
+    - heading "Уроки курса" [level=2] [ref=f6e687]
+    - generic [ref=f6e688]:
+      - heading "Добавить урок на курс" [level=2] [ref=f6e690]
+      - generic [ref=f6e691]:
+        - textbox "Название урока" [ref=f6e692]
+        - button "Добавить урок" [ref=f6e693] [cursor=pointer]
+  - generic [ref=f6e33]: Курс создан как черновик

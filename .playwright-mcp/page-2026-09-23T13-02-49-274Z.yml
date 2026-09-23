@@ -1,0 +1,32 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=e4]:
+      - link "Мои курсы" [ref=e415] [cursor=pointer]:
+        - /url: "#/author"
+    - generic [ref=e7]:
+      - generic [ref=e8]: "Роль:"
+      - combobox "Роль:" [ref=e9]:
+        - option "Ученик"
+        - option "Автор курса" [selected]
+        - option "Ревьюер"
+  - main [ref=e10]:
+    - generic [ref=e457]:
+      - link "Мои курсы" [ref=e458] [cursor=pointer]:
+        - /url: "#/author"
+      - text: / Алгоритмы и структуры данных
+    - generic [ref=e459]:
+      - generic [ref=e460]:
+        - heading "Алгоритмы и структуры данных" [level=1] [ref=e461]
+        - generic [ref=e462]: Черновик
+      - paragraph [ref=e464]: Сортировки, графы, деревья
+      - button "Опубликовать курс" [ref=e466] [cursor=pointer]
+    - generic [ref=e467]:
+      - heading "Ревьюер курса" [level=2] [ref=e469]
+      - paragraph [ref=e470]: Назначьте ревьюера, который будет проверять работы учеников курса.
+      - paragraph [ref=e471]: Ревьюер пока не назначен.
+      - generic [ref=e472]:
+        - combobox [ref=e473]
+        - button "Назначить ревьюера" [ref=e474] [cursor=pointer]
+    - heading "Уроки курса" [level=2] [ref=e477]
+  - generic [ref=e32]: Курс создан как черновик

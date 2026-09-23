@@ -1,0 +1,45 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=e4]:
+      - link "Мои курсы" [ref=e415] [cursor=pointer]:
+        - /url: "#/author"
+    - generic [ref=e7]:
+      - generic [ref=e8]: "Роль:"
+      - combobox "Роль:" [ref=e9]:
+        - option "Ученик"
+        - option "Автор курса" [selected]
+        - option "Ревьюер"
+  - main [ref=e10]:
+    - generic [ref=e481]:
+      - link "Мои курсы" [ref=e482] [cursor=pointer]:
+        - /url: "#/author"
+      - text: / Основы SQL
+    - generic [ref=e483]:
+      - generic [ref=e484]:
+        - heading "Основы SQL" [level=1] [ref=e497]
+        - generic [ref=e498]: Черновик
+      - paragraph [ref=e500]: Работа с базами данных и запросами
+      - button "Публикуем…" [disabled] [ref=e520]
+    - generic [ref=e487]:
+      - heading "Ревьюер курса" [level=2] [ref=e489]
+      - paragraph [ref=e490]: Назначьте ревьюера, который будет проверять работы учеников курса.
+      - paragraph [ref=e501]: "Назначен: Пётр Волков"
+      - generic [ref=e491]:
+        - combobox [ref=e492]:
+          - option "Мария Иванова"
+          - option "Пётр Волков" [selected]
+        - button "Назначить ревьюера" [ref=e493] [cursor=pointer]
+    - generic [ref=e494]:
+      - heading "Уроки курса" [level=2] [ref=e496]
+      - generic [ref=e502]:
+        - generic [ref=e504]:
+          - generic [ref=e505]:
+            - generic [ref=e506]: 1. Запросы SELECT
+            - generic [ref=e507]: "Шагов: 1"
+          - generic [ref=e508]: Черновик
+        - generic [ref=e511]:
+          - generic [ref=e512]:
+            - generic [ref=e513]: 2. Объединение таблиц (JOIN)
+            - generic [ref=e514]: "Шагов: 1"
+          - generic [ref=e515]: Черновик

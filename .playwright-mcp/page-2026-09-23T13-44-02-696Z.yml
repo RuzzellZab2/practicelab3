@@ -1,0 +1,25 @@
+- generic [active] [ref=f6e1]:
+  - banner [ref=f6e2]:
+    - generic [ref=f6e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f6e4]:
+      - link "Работы на ревью" [ref=f6e426] [cursor=pointer]:
+        - /url: "#/review"
+    - generic [ref=f6e7]:
+      - generic [ref=f6e8]: "Роль:"
+      - combobox "Роль:" [ref=f6e9]:
+        - option "Ученик"
+        - option "Автор курса"
+        - option "Ревьюер" [selected]
+        - option "Пользователь"
+  - main [ref=f6e10]:
+    - heading "Работы на ревью" [level=1] [ref=f6e469]
+    - paragraph [ref=f6e470]: Здесь отображаются работы учеников, ожидающие вашей проверки.
+    - article [ref=f6e472]:
+      - generic [ref=f6e473]:
+        - heading "Ольга Кузнецова" [level=2] [ref=f6e474]
+        - generic [ref=f6e475]: На ревью
+      - generic [ref=f6e476]:
+        - generic [ref=f6e477]: "Курс: Python-разработчик · Урок: Основы HTTP"
+        - generic [ref=f6e478]: "Отправлено: 10 мая 2026 г., 17:30"
+      - link "Проверить" [ref=f6e480] [cursor=pointer]:
+        - /url: "#/review/work/w_student2_http"

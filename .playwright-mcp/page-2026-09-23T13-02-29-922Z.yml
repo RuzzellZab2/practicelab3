@@ -1,0 +1,18 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=e4]:
+      - link "Каталог" [ref=e394] [cursor=pointer]:
+        - /url: "#/catalog"
+      - link "Мои результаты" [ref=e395] [cursor=pointer]:
+        - /url: "#/my-reviews"
+    - generic [ref=e7]:
+      - generic [ref=e8]: "Роль:"
+      - combobox "Роль:" [ref=e9]:
+        - option "Ученик" [selected]
+        - option "Автор курса"
+        - option "Ревьюер"
+  - main [ref=e10]:
+    - heading "Мои результаты" [level=1] [ref=e400]
+    - paragraph [ref=e401]: Здесь отображаются ваши работы и ревью по ним.
+    - paragraph [ref=e403]: Загрузка…

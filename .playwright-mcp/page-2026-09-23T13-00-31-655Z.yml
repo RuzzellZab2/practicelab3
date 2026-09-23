@@ -1,0 +1,60 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=e4]:
+      - link "Каталог" [ref=e5] [cursor=pointer]:
+        - /url: "#/catalog"
+      - link "Мои результаты" [ref=e6] [cursor=pointer]:
+        - /url: "#/my-reviews"
+    - generic [ref=e7]:
+      - generic [ref=e8]: "Роль:"
+      - combobox "Роль:" [ref=e9]:
+        - option "Ученик" [selected]
+        - option "Автор курса"
+        - option "Ревьюер"
+  - main [ref=e10]:
+    - generic [ref=e80]:
+      - link "Python-разработчик" [ref=e81] [cursor=pointer]:
+        - /url: "#/course/c_python"
+      - text: / Введение в Python
+    - heading "Введение в Python" [level=1] [ref=e84]
+    - generic [ref=e85]:
+      - generic [ref=e86]:
+        - generic [ref=e87]:
+          - generic [ref=e88]: Шаг 1
+          - heading "Что такое Python" [level=3] [ref=e89]
+        - generic [ref=e90]:
+          - paragraph [ref=e91]: Python — язык общего назначения с простым синтаксисом и большой экосистемой библиотек.
+          - paragraph [ref=e92]: "Иллюстрация: структура интерпретатора Python"
+          - button "Понятно, дальше" [ref=e93] [cursor=pointer]
+      - generic [ref=e94]:
+        - generic [ref=e95]:
+          - generic [ref=e96]: Шаг 2
+          - heading "Циклы while и for" [level=3] [ref=e97]
+        - generic [ref=e98]:
+          - generic [ref=e99]: ▶ Циклы while и for (12:40)
+          - button "Видео просмотрено" [disabled] [ref=e100]
+      - generic [ref=e101]:
+        - generic [ref=e102]:
+          - generic [ref=e103]: Шаг 3
+          - heading "Квиз по синтаксису" [level=3] [ref=e104]
+        - generic [ref=e105]:
+          - paragraph [ref=e106]: Какой оператор перебирает элементы последовательности?
+          - list [ref=e107]:
+            - listitem [ref=e108]:
+              - generic [ref=e109]:
+                - radio "for" [disabled] [ref=e110]
+                - text: for
+            - listitem [ref=e111]:
+              - generic [ref=e112]:
+                - radio "while" [disabled] [ref=e113]
+                - text: while
+            - listitem [ref=e114]:
+              - generic [ref=e115]:
+                - radio "if" [disabled] [ref=e116]
+                - text: if
+            - listitem [ref=e117]:
+              - generic [ref=e118]:
+                - radio "switch" [disabled] [ref=e119]
+                - text: switch
+          - button "Ответить" [disabled] [ref=e120]

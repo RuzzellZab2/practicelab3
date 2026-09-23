@@ -1,0 +1,30 @@
+- generic [active] [ref=f1e1]:
+  - banner [ref=f1e2]:
+    - generic [ref=f1e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f1e4]:
+      - link "Мои курсы" [ref=f1e32] [cursor=pointer]:
+        - /url: "#/author"
+    - generic [ref=f1e7]:
+      - generic [ref=f1e8]: "Роль:"
+      - combobox "Роль:" [ref=f1e9]:
+        - option "Ученик"
+        - option "Автор курса" [selected]
+        - option "Ревьюер"
+  - main [ref=f1e10]:
+    - generic [ref=f1e45]:
+      - link "Мои курсы" [ref=f1e46] [cursor=pointer]:
+        - /url: "#/author"
+      - text: /
+    - generic [ref=f1e47]:
+      - generic [ref=f1e48]:
+        - heading [level=1]
+      - paragraph
+      - button "Опубликовать курс" [ref=f1e50] [cursor=pointer]
+    - generic [ref=f1e51]:
+      - heading "Ревьюер курса" [level=2] [ref=f1e53]
+      - paragraph [ref=f1e54]: Назначьте ревьюера, который будет проверять работы учеников курса.
+      - paragraph
+      - generic [ref=f1e55]:
+        - combobox [ref=f1e56]
+        - button "Назначить ревьюера" [ref=f1e57] [cursor=pointer]
+    - heading "Уроки курса" [level=2] [ref=f1e60]

@@ -1,0 +1,48 @@
+- generic [ref=f5e1]:
+  - banner [ref=f5e2]:
+    - generic [ref=f5e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f5e4]:
+      - link "Каталог" [ref=f5e374] [cursor=pointer]:
+        - /url: "#/catalog"
+      - link "Мои результаты" [ref=f5e375] [cursor=pointer]:
+        - /url: "#/my-reviews"
+    - generic [ref=f5e7]:
+      - generic [ref=f5e8]: "Роль:"
+      - combobox "Роль:" [ref=f5e9]:
+        - option "Ученик" [selected]
+        - option "Автор курса"
+        - option "Ревьюер"
+        - option "Пользователь"
+  - main [ref=f5e10]:
+    - generic [ref=f5e692]:
+      - link "Python-разработчик" [ref=f5e725] [cursor=pointer]:
+        - /url: "#/course/c_python"
+      - text: / Основы HTTP
+    - heading "Основы HTTP" [level=1] [ref=f5e694]
+    - generic [ref=f5e726]:
+      - generic [ref=f5e727]:
+        - generic [ref=f5e728]: Шаг 1
+        - heading "Как работает HTTP" [level=3] [ref=f5e729]
+      - generic [ref=f5e730]:
+        - paragraph [ref=f5e731]: "HTTP — протокол передачи данных между клиентом и сервером: метод запроса, заголовки и тело ответа."
+        - paragraph [ref=f5e732]: "Иллюстрация: схема «клиент — сервер»"
+        - button "Понятно, дальше" [ref=f5e733] [cursor=pointer]
+      - generic [ref=f5e734]:
+        - heading "Комментарии к шагу" [level=4] [ref=f5e735]
+        - generic [ref=f5e736]: Комментариев пока нет.
+        - textbox "Ваш комментарий к шагу" [ref=f5e738]
+        - button "Оставить комментарий" [ref=f5e740] [cursor=pointer]
+    - generic [ref=f5e741]:
+      - generic [ref=f5e742]:
+        - heading "Практическая работа" [level=2] [ref=f5e743]
+        - generic [ref=f5e744]: Черновик сохранён
+      - paragraph [ref=f5e745]: Выполните задание и отправьте работу на проверку. Урок считается пройденным после того, как ревьюер примет работу.
+      - generic [ref=f5e746]:
+        - generic [ref=f5e747]: Решение (ссылка на репозиторий, код или текст)
+        - textbox "Решение (ссылка на репозиторий, код или текст)" [ref=f5e748]:
+          - /placeholder: https://github.com/...
+          - text: https://github.com/ivan/http-client
+      - generic [ref=f5e749]:
+        - button "Сохранить черновик" [ref=f5e750] [cursor=pointer]
+        - button "Отправить на ревью" [active] [ref=f5e751] [cursor=pointer]
+  - generic [ref=f5e117]: Работа на ревью

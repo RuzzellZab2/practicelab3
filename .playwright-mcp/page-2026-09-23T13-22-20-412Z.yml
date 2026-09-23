@@ -1,0 +1,42 @@
+- generic [active] [ref=f4e1]:
+  - banner [ref=f4e2]:
+    - generic [ref=f4e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f4e4]:
+      - link "Мои курсы" [ref=f4e45] [cursor=pointer]:
+        - /url: "#/author"
+    - generic [ref=f4e7]:
+      - generic [ref=f4e8]: "Роль:"
+      - combobox "Роль:" [ref=f4e9]:
+        - option "Ученик"
+        - option "Автор курса" [selected]
+        - option "Ревьюер"
+        - option "Пользователь"
+  - main [ref=f4e10]:
+    - generic [ref=f4e58]:
+      - link "Мои курсы" [ref=f4e59] [cursor=pointer]:
+        - /url: "#/author"
+      - text: /
+    - generic [ref=f4e60]:
+      - generic [ref=f4e61]:
+        - heading [level=1]
+      - paragraph
+      - button "Опубликовать курс" [ref=f4e63] [cursor=pointer]
+    - generic [ref=f4e64]:
+      - heading "Дедлайн курса" [level=2] [ref=f4e66]
+      - paragraph [ref=f4e67]: После дедлайна ученики не смогут сдавать работы.
+      - generic [ref=f4e68]:
+        - textbox [ref=f4e69]
+        - button "Установить дедлайн" [ref=f4e70] [cursor=pointer]
+    - generic [ref=f4e71]:
+      - heading "Ревьюер курса" [level=2] [ref=f4e73]
+      - paragraph [ref=f4e74]: Назначьте ревьюера, который будет проверять работы учеников курса.
+      - paragraph
+      - generic [ref=f4e75]:
+        - combobox [ref=f4e76]
+        - button "Назначить ревьюера" [ref=f4e77] [cursor=pointer]
+    - heading "Уроки курса" [level=2] [ref=f4e80]
+    - generic [ref=f4e81]:
+      - heading "Добавить урок на курс" [level=2] [ref=f4e83]
+      - generic [ref=f4e84]:
+        - textbox "Название урока" [ref=f4e85]
+        - button "Добавить урок" [ref=f4e86] [cursor=pointer]

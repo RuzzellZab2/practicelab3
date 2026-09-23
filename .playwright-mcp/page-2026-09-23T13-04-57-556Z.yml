@@ -1,0 +1,18 @@
+- generic [active] [ref=f2e1]:
+  - banner [ref=f2e2]:
+    - generic [ref=f2e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f2e4]:
+      - link "Каталог" [ref=f2e5] [cursor=pointer]:
+        - /url: "#/catalog"
+      - link "Мои результаты" [ref=f2e6] [cursor=pointer]:
+        - /url: "#/my-reviews"
+    - generic [ref=f2e7]:
+      - generic [ref=f2e8]: "Роль:"
+      - combobox "Роль:" [ref=f2e9]:
+        - option "Ученик" [selected]
+        - option "Автор курса"
+        - option "Ревьюер"
+  - main [ref=f2e10]:
+    - heading "Каталог курсов" [level=1] [ref=f2e11]
+    - paragraph [ref=f2e12]: Здесь отображаются опубликованные курсы, на которые можно записаться.
+    - paragraph [ref=f2e14]: Загрузка…

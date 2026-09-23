@@ -1,0 +1,18 @@
+- generic [active] [ref=f6e1]:
+  - banner [ref=f6e2]:
+    - generic [ref=f6e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f6e4]:
+      - link "Каталог" [ref=f6e5] [cursor=pointer]:
+        - /url: "#/catalog"
+      - link "Мои результаты" [ref=f6e6] [cursor=pointer]:
+        - /url: "#/my-reviews"
+    - generic [ref=f6e7]:
+      - generic [ref=f6e8]: "Роль:"
+      - combobox "Роль:" [ref=f6e9]:
+        - option "Ученик" [selected]
+        - option "Автор курса"
+        - option "Ревьюер"
+        - option "Пользователь"
+  - main [ref=f6e10]:
+    - generic [ref=f6e338]:
+      - heading [level=1]

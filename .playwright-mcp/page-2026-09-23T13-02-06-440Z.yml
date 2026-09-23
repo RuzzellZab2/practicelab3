@@ -1,0 +1,33 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=e4]:
+      - link "Работы на ревью" [ref=e337] [cursor=pointer]:
+        - /url: "#/review"
+    - generic [ref=e7]:
+      - generic [ref=e8]: "Роль:"
+      - combobox "Роль:" [ref=e9]:
+        - option "Ученик"
+        - option "Автор курса"
+        - option "Ревьюер" [selected]
+  - main [ref=e10]:
+    - generic [ref=e360]:
+      - link "Работы на ревью" [ref=e361] [cursor=pointer]:
+        - /url: "#/review"
+      - text: / Иван Петров
+    - generic [ref=e362]:
+      - generic [ref=e363]:
+        - heading "Основы HTTP" [level=1] [ref=e364]
+        - generic [ref=e365]: Работа на ревью
+      - generic [ref=e367]: "Курс: Python-разработчик · Ученик: Иван Петров"
+      - generic [ref=e368]: https://github.com/ivan/http-client
+    - generic [ref=e369]:
+      - heading "Оставить ревью" [level=2] [ref=e371]
+      - generic [ref=e372]:
+        - generic [ref=e373]: Комментарий ревьюера
+        - textbox "Комментарий ревьюера" [ref=e374]:
+          - /placeholder: Что нужно исправить или почему работа принята
+      - generic [ref=e375]:
+        - button "Принять работу" [active] [ref=e376] [cursor=pointer]
+        - button "Отправить на доработку" [ref=e377] [cursor=pointer]
+    - paragraph [ref=e379]: История ревью по этой работе пока пуста.

@@ -1,0 +1,91 @@
+- generic [ref=f6e1]:
+  - banner [ref=f6e2]:
+    - generic [ref=f6e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f6e4]:
+      - link "Мои курсы" [ref=f6e620] [cursor=pointer]:
+        - /url: "#/author"
+    - generic [ref=f6e7]:
+      - generic [ref=f6e8]: "Роль:"
+      - combobox "Роль:" [ref=f6e9]:
+        - option "Ученик"
+        - option "Автор курса" [selected]
+        - option "Ревьюер"
+        - option "Пользователь"
+  - main [ref=f6e10]:
+    - generic [ref=f6e698]:
+      - link "Мои курсы" [ref=f6e699] [cursor=pointer]:
+        - /url: "#/author"
+      - text: / Основы SQL
+    - generic [ref=f6e700]:
+      - generic [ref=f6e701]:
+        - heading "Основы SQL" [level=1] [ref=f6e727]
+        - generic [ref=f6e728]: Черновик
+      - paragraph [ref=f6e730]: Работа с базами данных и запросами
+      - generic [ref=f6e731]: "Дедлайн: 2026-10-01 18:00"
+      - button "Опубликовать курс" [ref=f6e703] [cursor=pointer]
+    - generic [ref=f6e704]:
+      - heading "Дедлайн курса" [level=2] [ref=f6e706]
+      - paragraph [ref=f6e707]: После дедлайна ученики не смогут сдавать работы.
+      - generic [ref=f6e708]:
+        - textbox [ref=f6e709]: 2026-10-01T18:00
+        - button "Установить дедлайн" [ref=f6e710] [cursor=pointer]
+    - generic [ref=f6e711]:
+      - heading "Ревьюер курса" [level=2] [ref=f6e713]
+      - paragraph [ref=f6e714]: Назначьте ревьюера, который будет проверять работы учеников курса.
+      - paragraph [ref=f6e732]: Ревьюер пока не назначен.
+      - generic [ref=f6e715]:
+        - combobox [ref=f6e716]:
+          - option "Мария Иванова" [selected]
+          - option "Пётр Волков"
+        - button "Назначить ревьюера" [ref=f6e717] [cursor=pointer]
+    - generic [ref=f6e718]:
+      - heading "Уроки курса" [level=2] [ref=f6e720]
+      - generic [ref=f6e733]:
+        - generic [ref=f6e808]:
+          - generic [ref=f6e809]:
+            - generic [ref=f6e810]: Урок 1. Запросы SELECT и WHERE
+            - generic [ref=f6e811]: Черновик
+          - generic [ref=f6e813]:
+            - generic [ref=f6e814]:
+              - generic [ref=f6e815]: Название урока
+              - textbox "Название урока" [ref=f6e816]: Запросы SELECT и WHERE
+            - button "Сохранить черновик" [ref=f6e817] [cursor=pointer]
+          - generic [ref=f6e818]: "Шаги урока:"
+          - list [ref=f6e819]:
+            - listitem [ref=f6e820]: 1. Основы SELECT
+          - generic [ref=f6e821]:
+            - textbox "Название нового шага" [ref=f6e822]: Фильтрация по WHERE
+            - combobox [ref=f6e823]:
+              - option "Иллюстрация" [selected]
+              - option "Видео"
+              - option "Квиз"
+              - option "Чеклист самопроверки"
+              - option "Интерактивное задание"
+            - button "Добавить шаг" [active] [ref=f6e824] [cursor=pointer]
+        - generic [ref=f6e825]:
+          - generic [ref=f6e826]:
+            - generic [ref=f6e827]: Урок 2. Объединение таблиц (JOIN)
+            - generic [ref=f6e828]: Черновик
+          - generic [ref=f6e830]:
+            - generic [ref=f6e831]:
+              - generic [ref=f6e832]: Название урока
+              - textbox "Название урока" [ref=f6e833]: Объединение таблиц (JOIN)
+            - button "Сохранить черновик" [ref=f6e834] [cursor=pointer]
+          - generic [ref=f6e835]: "Шаги урока:"
+          - list [ref=f6e836]:
+            - listitem [ref=f6e837]: 1. Внутреннее объединение
+          - generic [ref=f6e838]:
+            - textbox "Название нового шага" [ref=f6e839]
+            - combobox [ref=f6e840]:
+              - option "Иллюстрация" [selected]
+              - option "Видео"
+              - option "Квиз"
+              - option "Чеклист самопроверки"
+              - option "Интерактивное задание"
+            - button "Добавить шаг" [ref=f6e841] [cursor=pointer]
+    - generic [ref=f6e721]:
+      - heading "Добавить урок на курс" [level=2] [ref=f6e723]
+      - generic [ref=f6e724]:
+        - textbox "Название урока" [ref=f6e725]
+        - button "Добавить урок" [ref=f6e726] [cursor=pointer]
+  - generic [ref=f6e33]: Шаг добавлен в урок

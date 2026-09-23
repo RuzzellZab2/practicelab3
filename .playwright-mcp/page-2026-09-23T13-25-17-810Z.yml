@@ -1,0 +1,111 @@
+- generic [active] [ref=f5e1]:
+  - banner [ref=f5e2]:
+    - generic [ref=f5e3] [cursor=pointer]: PracticeLab
+    - navigation [ref=f5e4]:
+      - link "Мои курсы" [ref=f5e32] [cursor=pointer]:
+        - /url: "#/author"
+    - generic [ref=f5e7]:
+      - generic [ref=f5e8]: "Роль:"
+      - combobox "Роль:" [ref=f5e9]:
+        - option "Ученик"
+        - option "Автор курса" [selected]
+        - option "Ревьюер"
+        - option "Пользователь"
+  - main [ref=f5e10]:
+    - generic [ref=f5e47]:
+      - link "Мои курсы" [ref=f5e48] [cursor=pointer]:
+        - /url: "#/author"
+      - text: / Основы SQL
+    - generic [ref=f5e49]:
+      - generic [ref=f5e50]:
+        - heading "Основы SQL" [level=1] [ref=f5e76]
+        - generic [ref=f5e77]: Черновик
+      - paragraph [ref=f5e79]: Работа с базами данных и запросами
+      - generic [ref=f5e80]: "Дедлайн: 2026-10-01 18:00"
+      - button "Публикуем…" [disabled] [ref=f5e318]
+    - generic [ref=f5e53]:
+      - heading "Дедлайн курса" [level=2] [ref=f5e55]
+      - paragraph [ref=f5e56]: После дедлайна ученики не смогут сдавать работы.
+      - generic [ref=f5e57]:
+        - textbox [ref=f5e58]: 2026-10-01T18:00
+        - button "Установить дедлайн" [ref=f5e59] [cursor=pointer]
+    - generic [ref=f5e60]:
+      - heading "Ревьюер курса" [level=2] [ref=f5e62]
+      - paragraph [ref=f5e63]: Назначьте ревьюера, который будет проверять работы учеников курса.
+      - paragraph [ref=f5e81]: "Назначен: Мария Иванова"
+      - generic [ref=f5e64]:
+        - combobox [ref=f5e65]:
+          - option "Мария Иванова" [selected]
+          - option "Пётр Волков"
+        - button "Назначить ревьюера" [ref=f5e66] [cursor=pointer]
+    - generic [ref=f5e67]:
+      - heading "Уроки курса" [level=2] [ref=f5e69]
+      - generic [ref=f5e82]:
+        - generic [ref=f5e266]:
+          - generic [ref=f5e267]:
+            - generic [ref=f5e268]: Урок 1. Запросы SELECT и WHERE
+            - generic [ref=f5e269]: Черновик
+          - generic [ref=f5e271]:
+            - generic [ref=f5e272]:
+              - generic [ref=f5e273]: Название урока
+              - textbox "Название урока" [ref=f5e274]: Запросы SELECT и WHERE
+            - button "Сохранить черновик" [ref=f5e275] [cursor=pointer]
+          - generic [ref=f5e276]: "Шаги урока:"
+          - list [ref=f5e277]:
+            - listitem [ref=f5e278]: 1. Основы SELECT
+          - generic [ref=f5e279]:
+            - textbox "Название нового шага" [ref=f5e280]
+            - combobox [ref=f5e281]:
+              - option "Иллюстрация" [selected]
+              - option "Видео"
+              - option "Квиз"
+              - option "Чеклист самопроверки"
+              - option "Интерактивное задание"
+            - button "Добавить шаг" [ref=f5e282] [cursor=pointer]
+        - generic [ref=f5e283]:
+          - generic [ref=f5e284]:
+            - generic [ref=f5e285]: Урок 2. Объединение таблиц (JOIN)
+            - generic [ref=f5e286]: Черновик
+          - generic [ref=f5e288]:
+            - generic [ref=f5e289]:
+              - generic [ref=f5e290]: Название урока
+              - textbox "Название урока" [ref=f5e291]: Объединение таблиц (JOIN)
+            - button "Сохранить черновик" [ref=f5e292] [cursor=pointer]
+          - generic [ref=f5e293]: "Шаги урока:"
+          - list [ref=f5e294]:
+            - listitem [ref=f5e295]: 1. Внутреннее объединение
+          - generic [ref=f5e296]:
+            - textbox "Название нового шага" [ref=f5e297]
+            - combobox [ref=f5e298]:
+              - option "Иллюстрация" [selected]
+              - option "Видео"
+              - option "Квиз"
+              - option "Чеклист самопроверки"
+              - option "Интерактивное задание"
+            - button "Добавить шаг" [ref=f5e299] [cursor=pointer]
+        - generic [ref=f5e300]:
+          - generic [ref=f5e301]:
+            - generic [ref=f5e302]: Урок 3. Группировка и агрегация
+            - generic [ref=f5e303]: Черновик
+          - generic [ref=f5e305]:
+            - generic [ref=f5e306]:
+              - generic [ref=f5e307]: Название урока
+              - textbox "Название урока" [ref=f5e308]: Группировка и агрегация
+            - button "Сохранить черновик" [ref=f5e309] [cursor=pointer]
+          - generic [ref=f5e310]: "Шаги урока:"
+          - list [ref=f5e311]:
+            - listitem [ref=f5e312]: 1. Что такое GROUP BY
+          - generic [ref=f5e313]:
+            - textbox "Название нового шага" [ref=f5e314]
+            - combobox [ref=f5e315]:
+              - option "Иллюстрация" [selected]
+              - option "Видео"
+              - option "Квиз"
+              - option "Чеклист самопроверки"
+              - option "Интерактивное задание"
+            - button "Добавить шаг" [ref=f5e316] [cursor=pointer]
+    - generic [ref=f5e70]:
+      - heading "Добавить урок на курс" [level=2] [ref=f5e72]
+      - generic [ref=f5e73]:
+        - textbox "Название урока" [ref=f5e74]
+        - button "Добавить урок" [disabled] [ref=f5e75]
